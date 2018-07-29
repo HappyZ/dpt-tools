@@ -12,7 +12,7 @@ I will keep this as a secret for now.
 
 But if you read my code and realize what it is about, ping me at yz at 9pm.me and we may work on this together. Or, you can donate a cup of coffee to encourage this work.
 
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](zhuyanzi@gmail.com)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zhuyanzi@gmail.com&item_name=A+Cup+Of+Coffee&item_number=Thank+You&currency_code=USD)
 
 # 0x3 Tools
 
