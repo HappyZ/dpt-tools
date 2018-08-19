@@ -33,7 +33,7 @@
 # we do not care about animation
 
 # params
-INDIR=$1  # inputer folder
+INDIR=$1  # input folder
 TMPDIR=$INDIR
 PKGFILE=$1/repacked.pkg  # output pkg file
 SHA256KEY="./key.pub"

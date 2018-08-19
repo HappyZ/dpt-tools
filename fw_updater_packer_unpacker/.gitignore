@@ -2,3 +2,4 @@
 test/
 key.private
 key.pub
+key.private_sig
