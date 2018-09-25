@@ -22,7 +22,7 @@ Not ready yet. Still exploring.
 
 - [ ] Web interface hack
 - [ ] USB interface hack
-- [ ] ~~Build update package and flash~~ (fails as we cannot bypass pkg validation)
+- [ ] ~~Build update package and flash~~ (fails as we cannot bypass pkg validation, but I can confirm the current paid hacking method can, meaning they obtained the required private key from somewhere)
 - [ ] ~~Web interface testmode~~ (fails as we do not have `auth nonce` and required private key `K_PRIV_DT`)
 - [ ] ~~Official app~~ (fails as the firmware updates purely rely on web interface API)
 
