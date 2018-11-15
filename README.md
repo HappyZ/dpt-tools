@@ -18,10 +18,10 @@ But if you read my code and realize what it is about, ping me at yz at 9pm.me an
 
 Not ready yet. Still exploring.
 
-## Checklist on Potential Ways
+## Checklist ~~on Potential Ways~~
 
 - [ ] Web interface hack
-- [ ] USB interface hack
+- [X] USB interface hack ([shankerzhiwu at XDA](https://forum.xda-developers.com/general/help/idea-to-root-sonys-e-reader-dpt-rp1-t3654725/post78153143) did this! I will try it and update here. Great work!)
 - [ ] ~~Build update package and flash~~ (fails as we cannot bypass pkg validation, but I can confirm the current paid hacking method can, meaning they obtained the required private key from somewhere)
 - [ ] ~~Web interface testmode~~ (fails as we do not have `auth nonce` and required private key `K_PRIV_DT`)
 - [ ] ~~Official app~~ (fails as the firmware updates purely rely on web interface API)
