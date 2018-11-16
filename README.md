@@ -4,15 +4,13 @@ We likely have some fun stuff here!
 
 # 0x1 Special Thanks
 
-Great thanks to anonymous contributors all over the Internet even though you guys might not know you helped.
+Greatly thank
+* [shankerzhiwu and his/her friend at XDA](https://forum.xda-developers.com/general/help/idea-to-root-sonys-e-reader-dpt-rp1-t3654725/post78153143) who made the USB hack possible
+* [octavianx](https://github.com/octavianx/Unpack-and-rebuild-the-DPT-RP1-upgrade-firmware) who sheds light on the hack 
 
 # 0x2 What does DPT stand for?
 
-I will keep this as a secret for now.
-
-But if you read my code and realize what it is about, ping me at yz at 9pm.me and we may work on this together. Or, you can donate a cup of coffee to encourage this work.
-
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zhuyanzi@gmail.com&item_name=A+Cup+Of+Coffee&item_number=Thank+You&currency_code=USD)
+[cough cough] If you don't know what's DPT you won't need this.
 
 # 0x3 Tools
 
@@ -57,9 +55,7 @@ Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we ca
 - [ ] ~~Web interface testmode~~ (fails as we do not have `auth nonce` and required private key `K_PRIV_DT`)
 - [ ] ~~Official app~~ (fails as the firmware updates purely rely on web interface API)
 
-# 0x4 References
-
-Not gonna reveal those details but let's say there is a place named Google, and there is another place named GitHub.
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zhuyanzi@gmail.com&item_name=A+Cup+Of+Coffee&item_number=Thank+You&currency_code=USD)
 
 # 0xF Mission Impossible
 
