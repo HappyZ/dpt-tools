@@ -101,7 +101,18 @@ class DPT():
         cmd = "[ -d {} ] && echo 'YESS' || echo 'NONO'".format(folderp)
         return 'YESS' in self.diagnosis_write(cmd)
 
-    def diagnosis_write(self, cmd, echo=False):
+    def diagnosis_backup_boot(self):
+        '''
+        back up boot partition to /tmp/ folder
+        '''
+        cmd = 'dd if=/dev/mmcblk0p8 of=/tmp/boot.img.bak bs=4M'
+        self.diagnosis_write(cmd, timeout=60)
+        if not self.diagnosis_isfile('/tmp/boot.img.bak'):
+            self.err_print('Failed to backup!')
+            return False
+        return True
+
+    def diagnosis_write(self, cmd, echo=False, timeout=99):
         '''
         write cmd and read feedbacks
         '''
@@ -112,7 +123,7 @@ class DPT():
         try:
             self.serial.write(cmd.encode() + b'\n')
             # change timeout to (nearly) blocking first to read
-            self.serial.timeout = 99
+            self.serial.timeout = timeout
             resp = self.serial.read_until(b'# ')
             # change back the original timeout
             self.serial.timeout = self.serialReadTimeout

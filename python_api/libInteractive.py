@@ -3,6 +3,7 @@
 # built-ins
 import os
 import time
+import subprocess
 # import traceback
 
 
@@ -122,20 +123,75 @@ It behaves similarly to regular serial session with less flexibility (cannot use
 This mode intends to automate some complicated procedures.
 
 Supported commands:
-    `transfer-file` -- transfer file to DPT at 512bps
+    `push-file` -- transfer file to DPT at 512bps
+    `pull-file` -- transfer file from DPT
     `exit`/`quit`   -- leave the tool
     and many unix cmds (do not support less/head)
 """)
 
 
-def diagnosis_transfer_file(dpt, chunkSize=128):
+def diagnosis_pull_file(dpt):
     '''
-    transfer file through echo in diagnosis (serial) mode
+    pull file from device to local via xxd and parsing in 
+    python
+    do NOT pull large file using this, it will take forever
+    to finish..
+    '''
+    try:
+        # get and validate remote file path
+        remotefp = input('> DPT file path: ')
+        if not dpt.diagnosis_isfile(remotefp):
+            dpt.err_print('File {} does not exist!'.format(remotefp))
+            return False
+        # get local folder path
+        folder = input('> Local folder path: ')
+        if not os.path.isdir(folder):
+            resp = input('> {} not exist, create? [yes/no]: '.format(folder))
+            if resp == 'no':
+                return False
+            elif resp == 'yes':
+                os.makedirs(folder)
+            else:
+                dpt.err_print('Unrecognized input {}'.format(resp))
+                return False
+        # check if local fp exists
+        localfp = "{0}/{1}".format(folder, os.path.basename(remotefp))
+        if os.path.isfile(localfp):
+            resp = input('> {} exist, overwrite? [yes/no]: '.format(localfp))
+            if resp == 'no':
+                return False
+            elif not resp == 'yes':
+                dpt.err_print('Unrecognized input {}'.format(resp))
+                return False
+        # read from xxd, parse, and write to local file
+        startTime = int(time.time() * 1000)
+        cmd = "xxd -p {}".format(remotefp)
+        with open("{}.tmp".format(localfp), 'w') as f:
+            for each in dpt.diagnosis_write(cmd, timeout=999).splitlines():
+                f.write(each)
+        subprocess.call(
+            ['xxd', '-r', '-p', "{}.tmp".format(localfp), '>', localfp]
+        )
+        duration = int(time.time() * 1000) - startTime
+        dpt.info_print('Finished in {0:.2f}sec'.format(duration / 1000.0))
+        if os.path.isfile(localfp):
+            dpt.info_print("Success")
+            os.remove("{}.tmp".format(localfp))
+            return True
+    except BaseException as e:
+        dpt.err_print(str(e))
+    return False
+
+
+def diagnosis_push_file(dpt, chunkSize=128):
+    '''
+    push file from local to device through echo in diagnosis
+    (serial) mode
     using echo is dumb and slow but very reliable
     limited to 128 bytes per sec since we send raw bytes in
     string (each byte sent = 4 bytes), and terminal at best
     allows 1024 bytes to send
-    do NOT transfer large file using this, it will take
+    do NOT push large file using this, it will take
     forever to finish..
     '''
     try:
@@ -167,6 +223,7 @@ def diagnosis_transfer_file(dpt, chunkSize=128):
             elif not resp == 'yes':
                 dpt.err_print('Unrecognized input {}'.format(resp))
                 return False
+        # write through echo
         firstRun = True
         symbol = '>'
         startTime = int(time.time() * 1000)
@@ -187,6 +244,9 @@ def diagnosis_transfer_file(dpt, chunkSize=128):
                     firstRun = False
         duration = int(time.time() * 1000) - startTime
         dpt.info_print('Finished in {0:.2f}sec'.format(duration / 1000.0))
+        if dpt.diagnosis_isfile(remotefp):
+            dpt.info_print("Success")
+            return True
     except BaseException as e:
         dpt.err_print(str(e))
     return False
@@ -214,8 +274,11 @@ def diagnosis_cmd(dpt):
             elif cmd == 'help':
                 print_diagnosis_info()
                 continue
-            elif cmd == 'transfer-file':
-                diagnosis_transfer_file(dpt)
+            elif cmd == 'push-file':
+                diagnosis_push_file(dpt)
+                continue
+            elif cmd == 'pull-file':
+                diagnosis_pull_file(dpt)
                 continue
             rawresp = dpt.diagnosis_write(cmd)
             # ignore first and last echos
