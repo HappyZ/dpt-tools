@@ -16,7 +16,7 @@ But if you read my code and realize what it is about, ping me at yz at 9pm.me an
 
 # 0x3 Tools
 
-## python_api/dpt-tools.py
+## dpt-tools.py
 
 NOTE: Use at your own risk. I have tested this on my MacBook. You need `pip install httpsig` if you don't have it already. It only runs on Python 3.
 

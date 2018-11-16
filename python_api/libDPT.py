@@ -14,7 +14,10 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 def validateRequiredFiles(dpt):
-    requiredFiles = ['shankerzhiwu_disableidcheck.pkg', 'shankerzhiwu_changepwd.pkg']
+    requiredFiles = [
+        'python_api/shankerzhiwu_disableidcheck.pkg',
+        'python_api/shankerzhiwu_changepwd.pkg'
+    ]
     dpt.dbg_print('Checking required files...')
     for file in requiredFiles:
         if not os.path.isfile(file):
@@ -27,10 +30,11 @@ def disable_id_check(dpt):
     '''
     disable the id check (thanks to shankerzhiwu and his/her friend)
     '''
+    fp = 'python_api/shankerzhiwu_disableidcheck.pkg'
     try:
         resp = input('>>> Have you disabled the id check already? [yes/no]: ')
         if resp == 'no':
-            if not dpt.update_firmware(open('shankerzhiwu_disableidcheck.pkg', 'rb')):
+            if not dpt.update_firmware(open(fp, 'rb')):
                 dpt.err_print('Failed to upload shankerzhiwu_disableidcheck pkg')
                 return False
             try:
@@ -55,8 +59,9 @@ def reset_root_password(dpt):
     '''
     reset the root password (thanks to shankerzhiwu and his/her friend)
     '''
+    fp = 'python_api/shankerzhiwu_changepwd.pkg'
     try:
-        if not dpt.update_firmware(open('shankerzhiwu_changepwd.pkg', 'rb')):
+        if not dpt.update_firmware(open(fp, 'rb')):
             dpt.err_print('Failed to upload shankerzhiwu_changepwd pkg')
             return False
         return True

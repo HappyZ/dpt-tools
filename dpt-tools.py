@@ -5,9 +5,9 @@
 import argparse
 
 # lib
-from libDPT import DPT
-from libDPT import update_firmware
-from libDPT import obtain_diagnosis_access
+from python_api.libDPT import DPT
+from python_api.libDPT import update_firmware
+from python_api.libDPT import obtain_diagnosis_access
 
 
 def print_info():
@@ -46,6 +46,8 @@ def interactive(dpt):
             break
         elif cmd == 'fw':
             update_firmware(dpt)
+        elif cmd == 'help' or cmd == 'h':
+            print_info()
 
 
 def main():
