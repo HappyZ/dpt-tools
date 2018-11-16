@@ -106,10 +106,20 @@ class DPT():
         back up boot partition to /tmp/ folder
         '''
         cmd = 'dd if=/dev/mmcblk0p8 of=/tmp/boot.img.bak bs=4M'
-        self.diagnosis_write(cmd, timeout=60)
+        self.diagnosis_write(cmd, timeout=999)
         if not self.diagnosis_isfile('/tmp/boot.img.bak'):
-            self.err_print('Failed to backup!')
+            self.err_print('Failed to dump boot.img.bak!')
+            return None
+        return "/tmp/boot.img.bak"
+
+    def diagnosis_restore_boot(self, fp="/tmp/boot.img.bak"):
+        if not self.diagnosis_isfile(fp):
+            self.dbg_print("{} does not exist".format(fp))
             return False
+        cmd = "dd if='{}' of=/dev/mmcblk0p8 bs=4M".format(fp)
+        self.info_print("Fingercrossing.. Do NOT power off device!")
+        # need to be extra careful here
+        self.diagnosis_write(cmd, timeout=99999)
         return True
 
     def diagnosis_write(self, cmd, echo=False, timeout=99):
@@ -130,6 +140,19 @@ class DPT():
             self.dbg_print(resp)
         except serial.SerialTimeoutException as e:
             self.err_print('Timeout: {}'.format(e))
+            self.err_print("Do NOT panic. Command may be still running.")
+            self.err_print("Do NOT power off the device")
+            self.err_print("Quit the tool. You need manual troubleshooting:")
+            self.err_print("1. See if you can get back into tty in terminal")
+            self.err_print("   If not, unplug the cable and plug it back in,")
+            self.err_print("   try tty again in terminal")
+            self.err_print("2. Once you get in, try press `Enter` to see")
+            self.err_print("   the response. It could be still running so")
+            self.err_print("   nothing responded. Suggest not to kill it")
+            self.err_print("3. Be patient. If it stucks for hours, then kill")
+            self.err_print("   the process by pressing Ctrl + C. Depending on")
+            self.err_print("   what you ran, you may or may not have troubles")
+            self.err_print("4. Worst case is to flash the stock pkg, I think.")
         except BaseException as e:
             self.err_print(str(e))
             return ""
