@@ -4,7 +4,9 @@ We likely have some fun stuff here!
 
 # 0x1 Special Thanks
 
-Great thanks to anonymous contributors all over the Internet even though you guys might not know you helped.
+Greatly thank
+* [shankerzhiwu and his/her friend at XDA](https://forum.xda-developers.com/general/help/idea-to-root-sonys-e-reader-dpt-rp1-t3654725/post78153143) who made the USB hack possible
+* [octavianx](https://github.com/octavianx/Unpack-and-rebuild-the-DPT-RP1-upgrade-firmware) who shreds light on the hack 
 
 # 0x2 What does DPT stand for?
 
@@ -56,10 +58,6 @@ Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we ca
 - [ ] ~~Build update package and flash~~ (fails as we cannot bypass pkg validation, but I can confirm the current paid hacking method can, meaning they obtained the required private key from somewhere)
 - [ ] ~~Web interface testmode~~ (fails as we do not have `auth nonce` and required private key `K_PRIV_DT`)
 - [ ] ~~Official app~~ (fails as the firmware updates purely rely on web interface API)
-
-# 0x4 References
-
-Not gonna reveal those details but let's say there is a place named Google, and there is another place named GitHub.
 
 # 0xF Mission Impossible
 
