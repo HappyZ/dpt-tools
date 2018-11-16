@@ -10,11 +10,7 @@ Greatly thank
 
 # 0x2 What does DPT stand for?
 
-I will keep this as a secret for now.
-
-But if you read my code and realize what it is about, ping me at yz at 9pm.me and we may work on this together. Or, you can donate a cup of coffee to encourage this work.
-
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zhuyanzi@gmail.com&item_name=A+Cup+Of+Coffee&item_number=Thank+You&currency_code=USD)
+[cough cough] If you don't know what's DPT you won't need this.
 
 # 0x3 Tools
 
@@ -58,6 +54,8 @@ Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we ca
 - [ ] ~~Build update package and flash~~ (fails as we cannot bypass pkg validation, but I can confirm the current paid hacking method can, meaning they obtained the required private key from somewhere)
 - [ ] ~~Web interface testmode~~ (fails as we do not have `auth nonce` and required private key `K_PRIV_DT`)
 - [ ] ~~Official app~~ (fails as the firmware updates purely rely on web interface API)
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zhuyanzi@gmail.com&item_name=A+Cup+Of+Coffee&item_number=Thank+You&currency_code=USD)
 
 # 0xF Mission Impossible
 
