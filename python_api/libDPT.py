@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 
-# builtins
+# built-ins
 import os
+import time
+import serial
 import base64
 import httpsig
 import urllib3
@@ -11,116 +13,6 @@ from urllib.parse import quote_plus
 
 # warning suppression
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-
-def validateRequiredFiles(dpt):
-    requiredFiles = [
-        'python_api/shankerzhiwu_disableidcheck.pkg',
-        'python_api/shankerzhiwu_changepwd.pkg'
-    ]
-    dpt.dbg_print('Checking required files...')
-    for file in requiredFiles:
-        if not os.path.isfile(file):
-            dpt.err_print('File {0} does not exist!'.format(file))
-            return False
-    return True
-
-
-def disable_id_check(dpt):
-    '''
-    disable the id check (thanks to shankerzhiwu and his/her friend)
-    '''
-    fp = 'python_api/shankerzhiwu_disableidcheck.pkg'
-    try:
-        resp = input('>>> Have you disabled the id check already? [yes/no]: ')
-        if resp == 'no':
-            if not dpt.update_firmware(open(fp, 'rb')):
-                dpt.err_print('Failed to upload shankerzhiwu_disableidcheck pkg')
-                return False
-            try:
-                input(
-                    '>>> Press `Enter` key to continue after your DPT reboot, ' +
-                    'shows `update failure` message, and connects back to WiFi: ')
-            except BaseException as e:
-                dpt.err_print(str(e))
-                return False
-            return True
-        elif resp == 'yes':
-            return True
-        else:
-            dpt.err_print('Unrecognized response: {}'.format(resp))
-            return False
-    except BaseException as e:
-        dpt.err_print(str(e))
-        return False
-
-
-def reset_root_password(dpt):
-    '''
-    reset the root password (thanks to shankerzhiwu and his/her friend)
-    '''
-    fp = 'python_api/shankerzhiwu_changepwd.pkg'
-    try:
-        if not dpt.update_firmware(open(fp, 'rb')):
-            dpt.err_print('Failed to upload shankerzhiwu_changepwd pkg')
-            return False
-        return True
-    except BaseException as e:
-        dpt.err_print(str(e))
-        return False
-
-
-def obtain_diagnosis_access(dpt):
-    '''
-    root thanks to shankerzhiwu
-    '''
-    dpt.info_print(
-        'Please make sure you have charged your battery before this action.')
-    dpt.info_print(
-        'Thank shankerzhiwu (and his/her anonymous friend) a lot on this hack!!!' +
-        'All credits go to him (and his/her anonymous friend)!')
-    if not validateRequiredFiles(dpt):
-        return False
-    # step 1: disable the id check
-    if not disable_id_check(dpt):
-        return False
-    dpt.info_print('Congrats! You are half-way through! You have disabled the OTG ID check')
-    # step 2: reset root password
-    if not reset_root_password(dpt):
-        return False
-    dpt.info_print(
-        'You are all set! Wait till your DPT reboots and ' +
-        'shows `update failure` message! More edits will be added to this tool.')
-    return True
-
-
-def update_firmware(dpt):
-    '''
-    update firmware interface
-    '''
-    dpt.info_print(
-        'Please make sure you have charged your battery before this action.')
-    try:
-        resp = input('>>> Please enter the pkg file path: ')
-        if not os.path.isfile(resp):
-            dpt.err_print('File `{}` does not exist!'.format(resp))
-            return False
-        resp2 = input('>>> Pleae confirm {} is the pkg file to use [yes/no]: ')
-        if resp2 == 'yes':
-            if not dpt.update_firmware(open(resp, 'rb')):
-                dpt.err_print('Failed to upload pkg {}'.format(resp))
-                return False
-            dpt.info_print('Success!')
-            return True
-        elif resp == 'no':
-            dpt.info_print('Okay!')
-            return False
-        else:
-            dpt.err_print('Unrecognized response: {}'.format(resp))
-            return False
-    except BaseException as e:
-        dpt.err_print(str(e))
-        return False
 
 
 class DPT():
@@ -141,8 +33,117 @@ class DPT():
         self.cookies = {}
         # setup base url
         self.base_url = "https://{0}:8443".format(self.addr)
+        # holder of diagnosis serial
+        self.serial = None
+        self.serialReadTimeout = 1  # default read timeout is 1sec
 
-    def runCmd(self):
+    '''
+    diagnosis mode related
+    '''
+
+    def connect_to_diagnosis(self, ttyName):
+        '''
+        connect to diagnosis
+        '''
+        try:
+            ser = serial.Serial(ttyName, 115200, timeout=self.serialReadTimeout)
+            # ser.open()
+            if not ser.is_open:
+                raise BaseException
+            self.serial = ser
+        except BaseException as e:
+            self.err_print(
+                "Cannot open serial port {0} due to {1}"
+                .format(ttyName, str(e)))
+            return False
+        return True
+
+    def diagnosis_login(self, username, password):
+        '''
+        login onto DPT diagnosis mode
+        '''
+        if self.serial is None:
+            return False
+        try:
+            self.serial.write(b'\n')  # poke
+            resp = self.serial.read(50)
+            self.dbg_print(resp)
+            if b'login' in resp:
+                self.dbg_print('Entering username {}'.format(username))
+                self.serial.write(username.encode() + b'\n')
+                resp = self.serial.read(50)
+                self.dbg_print(resp)
+            if b'Password' in resp:
+                self.dbg_print('Entering password {}'.format(password))
+                self.serial.write(password.encode() + b'\n')
+                resp = self.serial.read(80)
+                self.dbg_print(resp)
+        except serial.SerialTimeoutException as e:
+            self.err_print('Timeout: {}'.format(e))
+        except BaseException as e:
+            self.err_print(str(e))
+            return False
+        if b'# ' in resp:
+            return True
+        return False
+
+    def diagnosis_isfile(self, fp):
+        '''
+        check if file exists given file path
+        '''
+        cmd = "[ -f {} ] && echo 'YESS' || echo 'NONO'".format(fp)
+        return 'YESS' in self.diagnosis_write(cmd)
+
+    def diagnosis_isfolder(self, folderp):
+        '''
+        check if file exists given file path
+        '''
+        cmd = "[ -d {} ] && echo 'YESS' || echo 'NONO'".format(folderp)
+        return 'YESS' in self.diagnosis_write(cmd)
+
+    def diagnosis_write(self, cmd, echo=False):
+        '''
+        write cmd and read feedbacks
+        '''
+        if self.serial is None:
+            return ""
+        if 'less ' in cmd:
+            self.err_print('do not support less/more')
+        try:
+            self.serial.write(cmd.encode() + b'\n')
+            # change timeout to (nearly) blocking first to read
+            self.serial.timeout = 99
+            resp = self.serial.read_until(b'# ')
+            # change back the original timeout
+            self.serial.timeout = self.serialReadTimeout
+            self.dbg_print(resp)
+        except serial.SerialTimeoutException as e:
+            self.err_print('Timeout: {}'.format(e))
+        except BaseException as e:
+            self.err_print(str(e))
+            return ""
+        if echo:
+            return resp.decode("utf-8").replace('\r\r\n', '')
+        return resp.decode("utf-8").replace('\r\r\n', '').replace(cmd, '')
+
+
+    def shut_down_diagnosis(self):
+        '''
+        close serial connection
+        '''
+        if self.serial is not None:
+            try:
+                self.serial.close()
+            except BaseException as e:
+                self.err_print('Cannot close serial port')
+                return False
+        return True
+
+    '''
+    Web interface related
+    '''
+
+    def run_cmd(self):
         # self._put_api_with_cookies(
         #     "/notify/login_result", data={"value": "this is a test"}
         # )
@@ -150,8 +151,8 @@ class DPT():
         # if folder_id:
         #     self.delete_folder(folder_id, force=False)
         # self._get_api_with_cookies("/folders2/c18c51bb-4323-4e9c-b874-40288e20227b")
-        self._get_testmode_auth_nonce("testmode")
-        self._get_api_with_cookies("/testmode/auth/nonce")
+        # self._get_testmode_auth_nonce("testmode")
+        # self._get_api_with_cookies("/testmode/auth/nonce")
         pass
 
     def commands_need_testmode_authentication(self):
@@ -451,21 +452,24 @@ class DPT():
         ok_code=204, cookies=None, data={}, files={}, headers={}
     ):
         apiurl = "{0}{1}".format(self.base_url, api)
-        r = requests.put(
-            apiurl,
-            cookies=cookies, verify=False,
-            json=data, files=files, headers=headers)
-        if r.status_code is ok_code:
-            self.dbg_print(apiurl)
-            if r.text:
-                self.dbg_print(r.json())
-                return r.json()
-            return {"status": "ok"}
-        self.err_print(apiurl)
         try:
-            self.err_request_print(r.status_code, r.json())
-        except BaseException:
-            self.err_print("{}, {}".format(r.status_code, r.text))
+            r = requests.put(
+                apiurl,
+                cookies=cookies, verify=False,
+                json=data, files=files, headers=headers)
+            if r.status_code is ok_code:
+                self.dbg_print(apiurl)
+                if r.text:
+                    self.dbg_print(r.json())
+                    return r.json()
+                return {"status": "ok"}
+            self.err_print(apiurl)
+            try:
+                self.err_request_print(r.status_code, r.json())
+            except BaseException:
+                self.err_print("{}, {}".format(r.status_code, r.text))
+        except BaseException as e:
+            self.err_print(str(e))
         return {}
 
     def _put_api_with_cookies(self, api, ok_code=204, data={}, files={}):
@@ -568,4 +572,4 @@ if __name__ == '__main__':
     #     f.write(dpt.get_past_logs())
     if args['dpt_fwfh'] and os.path.isfile(args['dpt_fwfh']):
         dpt.update_firmware(open(args['dpt_fwfh'], 'rb'))
-    # dpt.runCmd()
+    # dpt.run_cmd()

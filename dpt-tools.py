@@ -6,25 +6,34 @@ import argparse
 
 # lib
 from python_api.libDPT import DPT
-from python_api.libDPT import update_firmware
-from python_api.libDPT import obtain_diagnosis_access
+from python_api.libInteractive import diagnosis_mode
+from python_api.libInteractive import update_firmware
+from python_api.libInteractive import obtain_diagnosis_access
 
 
 def print_info():
-    print("""Thanks for using DPT Tools.
-Type `help` to show this message.
-
+    print("""===========
+ DPT Tools
+===========
+Thanks for using DPT Tools. Type `help` to show this message.
 Supported commands:
-  fw -- update firmware
-  root (thanks to shankerzhiwu and his/her anoymous friend) -- obtain root access
+    fw        -- update firmware
+    root      -- obtain root access (thanks to shankerzhiwu and his/her anoymous friend)
+    diagnosis -- enter diagnosis mode (after you get root access)
+    exit/quit -- leave the tool
 """)
 
 
-def interactive(dpt):
+def interactive(dpt, diagnosis=False):
     '''
     interactive shell to run commands
+    @param dpt: DPT object
+    @param diagnosis: if set True, will directly enter diagnosis mode
     '''
     firstTime = True
+    if diagnosis:
+        diagnosis_mode(dpt)
+        return
     while(1):
         if firstTime:
             print_info()
@@ -48,6 +57,8 @@ def interactive(dpt):
             update_firmware(dpt)
         elif cmd == 'help' or cmd == 'h':
             print_info()
+        elif cmd == 'diagnosis':
+            diagnosis_mode(dpt)
 
 
 def main():
@@ -72,6 +83,10 @@ def main():
         default=None,
         help="Hostname or IP address of the device")
     p.add_argument(
+        '--diagnosis',
+        action='store_true',
+        help="Run diagnosis mode directly")
+    p.add_argument(
         '--debug', '-d',
         action='store_true',
         help="Run with debugging mode")
@@ -83,11 +98,17 @@ def main():
         sys.exit()
 
     dpt = DPT(args.get('apt_addr', None), args.get('debug', False))
-    if not dpt.authenticate(args.get('dpt_id', ""), args.get('dpt_key', "")):
-        dpt.err_print("Cannot authenticate. Make sure your id, key, and ip addresses are correct.")
+    if (
+        not args.get('diagnosis', False) and 
+        not dpt.authenticate(args.get('dpt_id', ""), args.get('dpt_key', ""))
+    ):
+        dpt.err_print(
+            "Cannot authenticate. " +
+            "Make sure your id, key, and ip addresses are correct."
+        )
         exit(1)
 
-    interactive(dpt)
+    interactive(dpt, diagnosis=args.get('diagnosis', False))
 
 
 if __name__ == '__main__':
