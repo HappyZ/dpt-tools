@@ -16,12 +16,43 @@ But if you read my code and realize what it is about, ping me at yz at 9pm.me an
 
 # 0x3 Tools
 
-Not ready yet. Still exploring.
+## python_api/dpt-tools.py
 
-## Checklist ~~on Potential Ways~~
+NOTE: Use at your own risk. I have tested this on my MacBook. You need `pip install httpsig` if you don't have it already. It only runs on Python 3.
 
+This intends to be an interative shell commandline tool that wraps processes like updating firmware pkg, obtaining diagnosis access, etc.
+
+### Validating successful connections
+
+```
+python dpt-tools.py -id <deviceid file path> -k <your key file path> -ip <ip address>
+```
+
+Please refer to [janten's dpt-rp1-py](https://github.com/janten/dpt-rp1-py) on how do you get `deviceid` and `key` file path for your device.
+
+Then you will enter the interactive shell mode. Press `Ctrl + C` to exit, or type `exit` or `quit`.
+
+### Obtaining diagnosis access
+
+In the interactive shell, type `root`.
+
+### Update firmware from pkg file
+
+In the interactive shell, type `fw` and follow the instructions.
+
+
+## To-Do List
+
+### Development Roadmap
+
+Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we can explore more things! The things I am interested in:
+- [ ] Enabling ADB
+- [ ] Exploring system modifications
+- [ ] Understand the supported apps
+
+### Methods
 - [ ] Web interface hack
-- [X] USB interface hack ([shankerzhiwu at XDA](https://forum.xda-developers.com/general/help/idea-to-root-sonys-e-reader-dpt-rp1-t3654725/post78153143) did this! I will try it and update here. Great work!)
+- [X] USB interface hack ([shankerzhiwu and his/her friend at XDA](https://forum.xda-developers.com/general/help/idea-to-root-sonys-e-reader-dpt-rp1-t3654725/post78153143) did this! Great work!)
 - [ ] ~~Build update package and flash~~ (fails as we cannot bypass pkg validation, but I can confirm the current paid hacking method can, meaning they obtained the required private key from somewhere)
 - [ ] ~~Web interface testmode~~ (fails as we do not have `auth nonce` and required private key `K_PRIV_DT`)
 - [ ] ~~Official app~~ (fails as the firmware updates purely rely on web interface API)
