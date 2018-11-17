@@ -169,6 +169,9 @@ def diagnosis_pull_file(
                 resp = input(
                     '> {} exist, overwrite? [yes/no]: '.format(localfp))
                 overwrite = True if resp == 'yes' else False
+        # get md5
+        md5 = dpt.diagnosis_md5sum_file(remotefp)
+        # start
         dpt.info_print("Pulling file {}, plz be patient...".format(localfp))
         if overwrite:
             # read from hexdump, parse, and write to local file
@@ -196,16 +199,16 @@ def diagnosis_pull_file(
                     else:
                         break
                     offset += count
-                    if offset % 100:
+                    if offset % 100 == 0:
                         dpt.info_print("Copying.. at block {}".format(offset))
             # use xxd to convert back to binary file
             subprocess.call('xxd -r -p {0}.tmp > {0}'.format(localfp), shell=True)
             duration = int(time.time() * 1000) - startTime
             dpt.info_print('Finished in {0:.2f}sec'.format(duration / 1000.0))
             if os.path.isfile(localfp):
-                # TODO: add md5 validation
                 dpt.info_print("File pulled to: {}".format(localfp))
-                # os.remove("{}.tmp".format(localfp))
+                dpt.info_print("Please verify if it's MD5 is {}".format(md5))
+                os.remove("{}.tmp".format(localfp))
                 return localfp
     except BaseException as e:
         dpt.err_print(str(e))
@@ -250,14 +253,18 @@ def diagnosis_push_file(
                     return None
         # remote file exists, overwrite it?
         remotefp = "{0}/{1}".format(folder, os.path.basename(localfp))
-        if dpt.diagnosis_isfile(remotefp) and overwrite is None:
-            resp = input('> {} exist, overwrite? [yes/no]: '.format(remotefp))
-            overwrite = True if resp == 'yes' else False
+        if overwrite is None:
+            overwrite = True
+            if dpt.diagnosis_isfile(remotefp):
+                resp = input(
+                    '> {} exist, overwrite? [yes/no]: '.format(remotefp))
+                overwrite = True if resp == 'yes' else False
         if overwrite:
             # write through echo
             firstRun = True
             symbol = '>'
             startTime = int(time.time() * 1000)
+            totalChunks = 0
             with open(localfp, 'rb') as f:
                 while 1:
                     chunk = f.read(chunkSize)
@@ -273,11 +280,16 @@ def diagnosis_push_file(
                     if firstRun:
                         symbol = '>>'
                         firstRun = False
+                    totalChunks += 1
+                    if totalChunks % 100 == 0:
+                        dpt.info_print(
+                            "Copying.. at chuck {}".format(totalChunks))
             duration = int(time.time() * 1000) - startTime
             dpt.info_print('Finished in {0:.2f}sec'.format(duration / 1000.0))
             if dpt.diagnosis_isfile(remotefp):
-                # TODO: add md5 validation
+                md5 = dpt.diagnosis_md5sum_file(remotefp)
                 dpt.info_print("File pushed to: {}".format(remotefp))
+                dpt.info_print("It's MD5 is: {}".format(md5))
                 return remotefp
     except BaseException as e:
         dpt.err_print(str(e))

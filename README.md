@@ -17,9 +17,13 @@ Greatly thank
 
 ## dpt-tools.py
 
-NOTE: Use at your own risk. I have tested this on my MacBook. You need `pip install httpsig` if you don't have it already. It only runs on Python 3.
+NOTE: Use at your own risk. I have tested this on my *MacBook*. You need `pip install httpsig pyserial` if you don't have it already. It only runs on Python 3.
 
 This intends to be an interative shell commandline tool that wraps processes like updating firmware pkg, obtaining diagnosis access, etc.
+
+### Prerequirement
+
+To use the tool properly, you also need `xxd`.
 
 ### Validating successful connections
 

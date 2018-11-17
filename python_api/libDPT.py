@@ -91,9 +91,23 @@ class DPT():
         '''
         remove a file
         '''
-        if self.diagnosis_isfile(fp):
-            self.diagnosis_write("rm {}".format(fp))
-        return True
+        if not self.diagnosis_isfile(fp):
+            return True
+        resp = self.diagnosis_write("rm {}".format(fp))
+        return not (resp == "")
+
+    def diagnosis_md5sum_file(self, fp):
+        '''
+        get md5sum of a file
+        '''
+        if not self.diagnosis_isfile(fp):
+            return ""
+        resp = self.diagnosis_write("md5sum {}".format(fp))
+        try:
+            return resp[1].split()[0]
+        except BaseException as e:
+            self.err_print(str(e))
+        return ""
 
     def diagnosis_isfile(self, fp):
         '''
