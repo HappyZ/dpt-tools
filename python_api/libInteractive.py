@@ -132,7 +132,9 @@ Supported commands:
 """)
 
 
-def diagnosis_pull_file(dpt, remotefp=None, folder=None, overwrite=None):
+def diagnosis_pull_file(
+    dpt, remotefp=None, folder=None, overwrite=None
+):
     '''
     pull file from device to local via xxd and parsing in 
     python
@@ -161,28 +163,44 @@ def diagnosis_pull_file(dpt, remotefp=None, folder=None, overwrite=None):
                     return None
         # check if local fp exists
         localfp = "{0}/{1}".format(folder, os.path.basename(remotefp))
-        if os.path.isfile(localfp) and overwrite is None::
-            resp = input('> {} exist, overwrite? [yes/no]: '.format(localfp))
-            overwrite = True resp == 'yes' else False
+        if overwrite is None:
+            overwrite = True
+            if os.path.isfile(localfp):
+                resp = input(
+                    '> {} exist, overwrite? [yes/no]: '.format(localfp))
+                overwrite = True if resp == 'yes' else False
+        dpt.info_print("Pulling file {}, plz be patient...".format(localfp))
         if overwrite:
-            # read from xxd, parse, and write to local file
+            # read from hexdump, parse, and write to local file
             startTime = int(time.time() * 1000)
-            s = "xxd -p {}".format(remotefp)
+            offset = 0
+            count = 2
             with open("{}.tmp".format(localfp), 'w') as f:
-                for each in dpt.diagnosis_write(s, timeout=999).splitlines():
-                    f.write(each)
-            subprocess.call(
-                ['xxd', '-r', '-p', "{}.tmp".format(localfp), '>', localfp]
-            )
+                while 1:
+                    cmd = (
+                        "dd if={0} skip={1} ".format(remotefp, offset) +
+                        "count={0} | ".format(count) +
+                        "hexdump -ve '32/1 \"%.2x\" \"\\n\"'"
+                    )
+                    resp = dpt.diagnosis_write(cmd, timeout=99).splitlines()
+                    if len(resp[4:-1]) > 0:
+                        for each in resp[4:-1]:
+                            f.write(each)
+                    else:
+                        break
+                    offset += count
+            # use xxd to convert back to binary file
+            subprocess.call('xxd -r -p {0}.tmp > {0}'.format(localfp), shell=True)
             duration = int(time.time() * 1000) - startTime
             dpt.info_print('Finished in {0:.2f}sec'.format(duration / 1000.0))
             if os.path.isfile(localfp):
                 # TODO: add md5 validation
                 dpt.info_print("File pulled to: {}".format(localfp))
-                os.remove("{}.tmp".format(localfp))
+                # os.remove("{}.tmp".format(localfp))
                 return localfp
     except BaseException as e:
         dpt.err_print(str(e))
+    dpt.err_print("Failed to pull file {}".format(remotefp))
     return None
 
 
@@ -225,7 +243,7 @@ def diagnosis_push_file(
         remotefp = "{0}/{1}".format(folder, os.path.basename(localfp))
         if dpt.diagnosis_isfile(remotefp) and overwrite is None:
             resp = input('> {} exist, overwrite? [yes/no]: '.format(remotefp))
-            overwrite = True resp == 'yes' else False
+            overwrite = True if resp == 'yes' else False
         if overwrite:
             # write through echo
             firstRun = True
@@ -280,7 +298,7 @@ def diagnosis_restore_bootimg(dpt, usetmpfp=None, bootimgfp=None):
     '''
     if usetmpfp is None:
         resp = input('> Use local boot img? [yes/no]: ')
-        usetmpfp = False resp == 'yes' else True
+        usetmpfp = False if resp == 'yes' else True
     # directly use the original backup, if exists
     if usetmpfp:
         return dpt.diagnosis_restore_boot(self, fp="/tmp/boot.img.bak")
@@ -353,7 +371,7 @@ def diagnosis_mode(dpt):
     dpt.info_print('1. Turn of DPT')
     dpt.info_print('2. Hold HOME button')
     dpt.info_print('3. Press POWER button once. Then light blinks yellow')
-    dpt.info_print('4. Wait till a black square appear on the screen')
+    dpt.info_print('4. Release HOME button, a black square will show up')
     dpt.info_print('5. Connect to computer')
     try:
         resp = input('>>> Black square on the screen? [yes/no]: ')

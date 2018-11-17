@@ -70,10 +70,12 @@ def main():
     p.add_argument(
         '--client-id', '-id',
         dest="dpt_id",
+        default="",
         help="File containing the device's client id")
     p.add_argument(
         '--key', '-k',
         dest="dpt_key",
+        default="",
         help="File containing the device's private key")
     p.add_argument(
         '--addr', '-ip',

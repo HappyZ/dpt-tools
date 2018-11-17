@@ -87,6 +87,14 @@ class DPT():
             return True
         return False
 
+    def diagnosis_remove_file(self, fp):
+        '''
+        remove a file
+        '''
+        if self.diagnosis_isfile(fp):
+            self.diagnosis_write("rm {}".format(fp))
+        return True
+
     def diagnosis_isfile(self, fp):
         '''
         check if file exists given file path
@@ -137,7 +145,6 @@ class DPT():
             resp = self.serial.read_until(b'# ')
             # change back the original timeout
             self.serial.timeout = self.serialReadTimeout
-            self.dbg_print(resp)
         except serial.SerialTimeoutException as e:
             self.err_print('Timeout: {}'.format(e))
             self.err_print("Do NOT panic. Command may be still running.")
@@ -153,12 +160,16 @@ class DPT():
             self.err_print("   the process by pressing Ctrl + C. Depending on")
             self.err_print("   what you ran, you may or may not have troubles")
             self.err_print("4. Worst case is to flash the stock pkg, I think.")
+            return ""
         except BaseException as e:
             self.err_print(str(e))
             return ""
         if echo:
-            return resp.decode("utf-8").replace('\r\r\n', '')
-        return resp.decode("utf-8").replace('\r\r\n', '').replace(cmd, '')
+            resp = resp.decode("utf-8").replace("\r\r\n", '')
+        else:
+            resp = resp.decode("utf-8").replace("\r\r\n", '').replace(cmd, '')
+        self.dbg_print("len of {}; dbg: ".format(len(resp), resp.splitlines()))
+        return resp
 
 
     def shut_down_diagnosis(self):
