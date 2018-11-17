@@ -3,3 +3,4 @@ secrets
 .DS_Store
 *.pyc
 abootimg
+mkbootimg

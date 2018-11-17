@@ -102,7 +102,7 @@ class DPT():
         '''
         if not self.diagnosis_isfile(fp):
             return ""
-        resp = self.diagnosis_write("md5sum {}".format(fp))
+        resp = self.diagnosis_write("md5sum {}".format(fp)).splitlines()
         try:
             return resp[1].split()[0]
         except BaseException as e:
@@ -113,36 +113,37 @@ class DPT():
         '''
         check if file exists given file path
         '''
-        cmd = "[ -f {} ] && echo 'YESS' || echo 'NONO'".format(fp)
+        cmd = "[[ -f {} ]] && echo 'YESS' || echo 'NONO'".format(fp)
         return 'YESS' in self.diagnosis_write(cmd)
 
     def diagnosis_isfolder(self, folderp):
         '''
         check if file exists given file path
         '''
-        cmd = "[ -d {} ] && echo 'YESS' || echo 'NONO'".format(folderp)
+        cmd = "[[ -d {} ]] && echo 'YESS' || echo 'NONO'".format(folderp)
         return 'YESS' in self.diagnosis_write(cmd)
 
     def diagnosis_backup_boot(self):
         '''
         back up boot partition to /tmp/ folder
         '''
-        cmd = 'dd if=/dev/mmcblk0p8 of=/tmp/boot.img.bak bs=4M'
+        cmd = 'dd if=/dev/mmcblk0p8 of=/root/boot.img.bak bs=4M'
         self.diagnosis_write(cmd, timeout=999)
-        if not self.diagnosis_isfile('/tmp/boot.img.bak'):
+        if not self.diagnosis_isfile('/root/boot.img.bak'):
             self.err_print('Failed to dump boot.img.bak!')
-            return None
-        return "/tmp/boot.img.bak"
+            return ""
+        return "/root/boot.img.bak"
 
-    def diagnosis_restore_boot(self, fp="/tmp/boot.img.bak"):
+    def diagnosis_restore_boot(self, fp="/root/boot.img.bak"):
         if not self.diagnosis_isfile(fp):
-            self.dbg_print("{} does not exist".format(fp))
+            self.err_print("{} does not exist".format(fp))
             return False
         cmd = "dd if='{}' of=/dev/mmcblk0p8 bs=4M".format(fp)
         self.info_print("Fingercrossing.. Do NOT power off device!")
         # need to be extra careful here
-        self.diagnosis_write(cmd, timeout=99999)
-        return True
+        resp = self.diagnosis_write(cmd, timeout=99999)
+        self.info_print(resp)
+        return not (resp == "")
 
     def diagnosis_write(self, cmd, echo=False, timeout=99):
         '''
@@ -153,6 +154,8 @@ class DPT():
         if 'less ' in cmd:
             self.err_print('do not support less/more')
         try:
+            self.serial.flushInput()
+            self.serial.flushOutput()
             self.serial.write(cmd.encode() + b'\n')
             # change timeout to (nearly) blocking first to read
             self.serial.timeout = timeout

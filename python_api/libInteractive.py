@@ -223,11 +223,12 @@ def diagnosis_push_file(
     push file from local to device through echo in diagnosis
     (serial) mode
     using echo is dumb and slow but very reliable
-    limited to 128 bytes per sec since we send raw bytes in
-    string (each byte sent = 4 bytes), and terminal at best
+    limited to 128 bytes per cmd or below, since we send raw bytes
+    in string (each byte sent = 4 bytes), and terminal at best
     allows 1024 bytes to send
     do NOT push large file using this, it will take
     forever to finish..
+    as a reference: push a 16MB file costs you roughly 22min
     '''
     try:
         # get local file path
@@ -274,7 +275,8 @@ def diagnosis_push_file(
                             symbol,
                             remotefp
                         )
-                        dpt.diagnosis_write(cmd)
+                        if dpt.diagnosis_write(cmd) == "":
+                            raise BaseException
                     else:
                         break
                     if firstRun:
@@ -302,7 +304,7 @@ def diagnosis_backup_bootimg(dpt):
     '''
     remotefp = dpt.diagnosis_backup_boot()
     # pull this backup file to current folder
-    if remotefp is not None:
+    if remotefp:
         fp = diagnosis_pull_file(
             dpt, remotefp=remotefp, folder=".", overwrite=True
         )
@@ -318,19 +320,22 @@ def diagnosis_restore_bootimg(dpt, usetmpfp=None, bootimgfp=None):
     restore boot img
     '''
     if usetmpfp is None:
-        resp = input('> Use local boot img? [yes/no]: ')
+        resp = input('> Upload boot img? [yes/no]: ')
         usetmpfp = False if resp == 'yes' else True
     # directly use the original backup, if exists
     if usetmpfp:
-        return dpt.diagnosis_restore_boot(self, fp="/tmp/boot.img.bak")
+        dpt.info_print("Trying to use /root/boot.img.bak")
+        return dpt.diagnosis_restore_boot(fp="/root/boot.img.bak")
     # otherwise we need to first upload our own boot img
     remotefp = diagnosis_push_file(dpt, folder="/tmp", overwrite=True)
     if remotefp is not None:
-        if dpt.diagnosis_restore_boot(self, fp=remotefp):
-            dpt.info_print("Success!")
-            return True
-        dpt.err_print("Failed..")
-        return False
+        resp = input('> Confirm to continue? [yes/no]: ')
+        if resp == 'yes':
+            if dpt.diagnosis_restore_boot(fp=remotefp):
+                dpt.info_print("Success!")
+                return True
+            dpt.err_print("Failed..")
+            return False
     dpt.err_print("Nothing happened..")
     return False
 
