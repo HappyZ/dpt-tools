@@ -177,18 +177,27 @@ def diagnosis_pull_file(
             count = 2
             with open("{}.tmp".format(localfp), 'w') as f:
                 while 1:
+                    # split file
                     cmd = (
                         "dd if={0} skip={1} ".format(remotefp, offset) +
-                        "count={0} | ".format(count) +
-                        "hexdump -ve '32/1 \"%.2x\" \"\\n\"'"
+                        "count={0} of=/tmp/sparse.tmp".format(count)
+                    )
+                    if not dpt.diagnosis_write(cmd):
+                        break
+                    # cat to download
+                    cmd = (
+                        "cat /tmp/sparse.tmp | " +
+                        "hexdump -ve '32/1 \"%02X\" \"\\n\"'"
                     )
                     resp = dpt.diagnosis_write(cmd, timeout=99).splitlines()
-                    if len(resp[4:-1]) > 0:
-                        for each in resp[4:-1]:
+                    if len(resp[1:-1]) > 0:
+                        for each in resp[1:-1]:
                             f.write(each)
                     else:
                         break
                     offset += count
+                    if offset % 100:
+                        dpt.info_print("Copying.. at block {}".format(offset))
             # use xxd to convert back to binary file
             subprocess.call('xxd -r -p {0}.tmp > {0}'.format(localfp), shell=True)
             duration = int(time.time() * 1000) - startTime
