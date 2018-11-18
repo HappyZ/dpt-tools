@@ -123,6 +123,50 @@ class DPT():
         cmd = "[[ -d {} ]] && echo 'YESS' || echo 'NONO'".format(folderp)
         return 'YESS' in self.diagnosis_write(cmd)
 
+    def diagnosis_set_perm(self, fp, owner='0.0', perm='0777'):
+        '''
+        set permission of a file
+        '''
+        self.info_print('Set {0}: owner={1} perm={2}'.format(fp, owner, perm))
+        self.diagnosis_write('chown {0} {1}'.format(owner, fp))
+        self.diagnosis_write('chmod {0} {1}'.format(perm, fp))
+
+    def diagnosis_mkdir(self, folder):
+        '''
+        mkdir -p folder
+        '''
+        if not self.diagnosis_isfolder(folder):
+            self.info_print("{} already exist".format(folder))
+            return True
+        if not self.diagnosis_write('mkdir -p {}'.format(folder)):
+            self.err_print('Failed to create folder {}'.format(folder))
+            return False
+        return True
+
+    def diagnosis_ln(self, srcf, destf):
+        '''
+        ln -s srcfolder, targetfolder
+        '''
+        if not self.diagnosis_write('ln -s {0} {1}'.format(srcf, destf)):
+            self.err_print('Failed to link file')
+            return False
+        return True
+
+    def diagnosis_mount_system(self):
+        '''
+        mount system partition to mountpoint
+        '''
+        mountpoint = '/mnt/Lucifer'
+        if not self.diagnosis_mkdir(folder):
+            return ""
+        # umount first just in case
+        self.diagnosis_write('umount {}'.format(mountpoint))
+        # mount system partition (/dev/mmcblk0p9)
+        self.diagnosis_write('mount /dev/mmcblk0p9 {}'.format(mountpoint))
+        if self.diagnosis_isfolder('{}/xbin'.format(mountpoint)):
+            return mountpoint
+        return ""
+
     def diagnosis_backup_boot(self):
         '''
         back up boot partition to /tmp/ folder
@@ -149,8 +193,9 @@ class DPT():
         '''
         write cmd and read feedbacks
         '''
+        resp = ''
         if self.serial is None:
-            return ""
+            return resp
         if 'less ' in cmd:
             self.err_print('do not support less/more')
         try:
@@ -159,7 +204,10 @@ class DPT():
             self.serial.write(cmd.encode() + b'\n')
             # change timeout to (nearly) blocking first to read
             self.serial.timeout = timeout
-            resp = self.serial.read_until(b'# ')
+            tmpresp = b''
+            while not '@FPX-' in resp:
+                tmpresp = self.serial.read_until(b'# ')
+                resp += tmpresp.decode("utf-8").replace("\r\r\n", '')
             # change back the original timeout
             self.serial.timeout = self.serialReadTimeout
         except serial.SerialTimeoutException as e:
@@ -181,10 +229,8 @@ class DPT():
         except BaseException as e:
             self.err_print(str(e))
             return ""
-        if echo:
-            resp = resp.decode("utf-8").replace("\r\r\n", '')
-        else:
-            resp = resp.decode("utf-8").replace("\r\r\n", '').replace(cmd, '')
+        if not echo:
+            resp = resp.replace(cmd, '')
         self.dbg_print("len of {}; dbg: ".format(len(resp), resp.splitlines()))
         return resp
 

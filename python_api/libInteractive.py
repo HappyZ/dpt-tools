@@ -7,11 +7,50 @@ import subprocess
 # import traceback
 
 
-def validate_required_files(dpt):
-    requiredFiles = [
-        'python_api/shankerzhiwu_disableidcheck.pkg',
-        'python_api/shankerzhiwu_changepwd.pkg'
-    ]
+'''
+Web Interface API Related
+'''
+
+def update_firmware(dpt):
+    '''
+    update firmware interface
+    '''
+    dpt.info_print(
+        'Please make sure you have charged your battery before this action.')
+    try:
+        resp = input('>>> Please enter the pkg file path: ')
+        if not os.path.isfile(resp):
+            dpt.err_print('File `{}` does not exist!'.format(resp))
+            return False
+        resp2 = input('>>> Pleae confirm {} is the pkg file to use [yes/no]: ')
+        if resp2 == 'yes':
+            if not dpt.update_firmware(open(resp, 'rb')):
+                dpt.err_print('Failed to upload pkg {}'.format(resp))
+                return False
+            dpt.info_print('Success!')
+            return True
+        elif resp == 'no':
+            dpt.info_print('Okay!')
+        else:
+            dpt.err_print('Unrecognized response: {}'.format(resp))
+    except BaseException as e:
+        dpt.err_print(str(e))
+    return False
+
+
+def validate_required_files(dpt, purpose='diagnosis'):
+    if purpose == 'su-binary':
+        requiredFiles = [
+            'python_api/assets/su',
+            'python_api/assets/supolicy',
+            'python_api/assets/libsupol.so',
+            'python_api/assets/install-recovery.sh'
+        ]
+    else:
+        requiredFiles = [
+            'python_api/assets/shankerzhiwu_disableidcheck.pkg',
+            'python_api/assets/shankerzhiwu_changepwd.pkg'
+        ]
     dpt.dbg_print('Checking required files...')
     for file in requiredFiles:
         if not os.path.isfile(file):
@@ -24,7 +63,7 @@ def disable_id_check(dpt):
     '''
     disable the id check (thanks to shankerzhiwu and his/her friend)
     '''
-    fp = 'python_api/shankerzhiwu_disableidcheck.pkg'
+    fp = 'python_api/assets/shankerzhiwu_disableidcheck.pkg'
     try:
         resp = input('>>> Have you disabled the id check already? [yes/no]: ')
         if resp == 'no':
@@ -52,7 +91,7 @@ def reset_root_password(dpt):
     '''
     reset the root password (thanks to shankerzhiwu and his/her friend)
     '''
-    fp = 'python_api/shankerzhiwu_changepwd.pkg'
+    fp = 'python_api/assets/shankerzhiwu_changepwd.pkg'
     try:
         if not dpt.update_firmware(open(fp, 'rb')):
             dpt.err_print('Failed to upload shankerzhiwu_changepwd pkg')
@@ -87,31 +126,9 @@ def obtain_diagnosis_access(dpt):
     return True
 
 
-def update_firmware(dpt):
-    '''
-    update firmware interface
-    '''
-    dpt.info_print(
-        'Please make sure you have charged your battery before this action.')
-    try:
-        resp = input('>>> Please enter the pkg file path: ')
-        if not os.path.isfile(resp):
-            dpt.err_print('File `{}` does not exist!'.format(resp))
-            return False
-        resp2 = input('>>> Pleae confirm {} is the pkg file to use [yes/no]: ')
-        if resp2 == 'yes':
-            if not dpt.update_firmware(open(resp, 'rb')):
-                dpt.err_print('Failed to upload pkg {}'.format(resp))
-                return False
-            dpt.info_print('Success!')
-            return True
-        elif resp == 'no':
-            dpt.info_print('Okay!')
-        else:
-            dpt.err_print('Unrecognized response: {}'.format(resp))
-    except BaseException as e:
-        dpt.err_print(str(e))
-    return False
+'''
+Diagnosis Related
+'''
 
 
 def print_diagnosis_info():
@@ -127,6 +144,7 @@ Supported commands:
     `pull-file`         -- transfer file from DPT
     `backup-bootimg`    -- backup the boot img and download it to local device
     `restore-bootimg`   -- restore the boot img
+    `get-su-bin`        -- enable `su` (root) in adb (beta, not well tested)
     `exit`/`quit`       -- leave the tool
     and many unix cmds (do not support less/head)
 """)
@@ -315,6 +333,98 @@ def diagnosis_backup_bootimg(dpt):
     return False
 
 
+def diagnosis_get_su_bin(dpt):
+    '''
+    get sudo access in adb mode (so it would be much much eaiser to
+    make changes (no painful serial data transfer)
+    after doing this, adb should handle most necessary modifications
+    here we use system-method (push binary files to system)
+    '''
+    if not validate_required_files(dpt, purpose='su-binary'):
+        return False
+    dpt.info_print("Mounting /system partition..")
+    mountpoint = dpt.diagnosis_mount_system()
+    dpt.info_print("Mounted to {}".format(mountpoint))
+    if not mountpoint:
+        dpt.err_print("Nothing happened..")
+        return False
+
+    dpt.info_print("Uploading su file to /system/xbin..")
+    sufp = diagnosis_push_file(
+        dpt,
+        localfp='python_api/assets/su',
+        folder='{}/xbin'.format(mountpoint),
+        overwrite=True)
+    if sufp is None:
+        dpt.err_print("Due to previous failure, we stopped..")
+        return False
+    dpt.diagnosis_set_perm(sufp, owner='0.0', perm='0755')
+    daemonsufp = sufp[:-2] + 'daemonsu'
+    dpt.diagnosis_write('cp {0} {1}'.format(sufp, daemonsufp))
+    extfolder = "{}/bin/.ext".format(mountpoint)
+    dpt.diagnosis_mkdir(extfolder)
+    dpt.diagnosis_set_perm(extfolder, owner='0.0', perm='0777')
+    dpt.diagnosis_write('cp {0} {1}/su'.format(sufp, extfolder))
+
+    dpt.info_print("Uploading supolicy file to /system/xbin..")
+    supolicyfp = diagnosis_push_file(
+        dpt,
+        localfp='python_api/assets/supolicy',
+        folder='{}/xbin'.format(mountpoint),
+        overwrite=True)
+    if supolicyfp is None:
+        dpt.err_print("Due to previous failure, we stopped..")
+        return False
+    dpt.diagnosis_set_perm(supolicyfp, owner='0.0', perm='0755')
+    libsupolsofp = diagnosis_push_file(
+        dpt,
+        localfp='python_api/assets/libsupol.so',
+        folder='{}/lib'.format(mountpoint),
+        overwrite=True)
+    if libsupolsofp is None:
+        dpt.err_print("Due to previous failure, we stopped..")
+        return False
+    dpt.diagnosis_set_perm(libsupolsofp, owner='0.0', perm='0644')
+
+    dpt.info_print("Uploading install-recovery.sh to /system/bin..")
+    installrecfp = diagnosis_push_file(
+        dpt,
+        localfp='python_api/assets/install-recovery.sh',
+        folder='{}/bin'.format(mountpoint),
+        overwrite=True)
+    if installrecfp is None:
+        dpt.err_print("Due to previous failure, we stopped..")
+        return False
+    dpt.diagnosis_set_perm(installrecfp, owner='0.0', perm='0755')
+
+    dpt.info_print("Tweaking /system/bin/app_process..")
+    appprocessfp = '{0}/bin/app_process'.format(mountpoint)
+    dpt.diagnosis_write('mv {0} {0}_bak'.format(appprocessfp))
+    dpt.diagnosis_ln(daemonsufp, "/system/bin/app_process")
+
+    dpt.info_print("Tweaking /system/bin/app_process32..")
+    appprocess32fp = '{0}32'.format(appprocessfp)
+    if dpt.diagnosis_isfile("{}_original".format(appprocess32fp)):
+        dpt.diagnosis_remove_file(appprocess32fp)
+    else:
+        dpt.diagnosis_write("mv {0} {0}_original".format(appprocessfp))
+    dpt.diagnosis_ln(daemonsufp, "/system/bin/app_process32")
+
+    dpt.info_print("Tweaking /system/bin/app_process_init..")
+    if not dpt.diagnosis_isfile("{}_init".format(appprocessfp)):
+        dpt.diagnosis_write(
+            "cp {0}_ori {1}_init".format(appprocess32fp, appprocessfp))
+        dpt.diagnosis_set_perm(
+            "{}_init".format(appprocessfp), owner='0.2000', perm='0755')
+
+    dpt.info_print("Misc: add /system/etc/.installed_su_daemon")
+    miscfp = "{}/etc/.installed_su_daemon".format(mountpoint)
+    dpt.diagnosis_write("echo 1 > {}".format(miscfp))
+    dpt.diagnosis_set_perm(miscfp, owner='0.0', perm='0644')
+
+    dpt.info_print("Done!")
+
+
 def diagnosis_restore_bootimg(dpt, usetmpfp=None, bootimgfp=None):
     '''
     restore boot img
@@ -373,6 +483,9 @@ def diagnosis_cmd(dpt):
                 continue
             elif cmd == 'restore-bootimg':
                 diagnosis_restore_bootimg(dpt)
+                continue
+            elif cmd == 'get-su-bin':
+                diagnosis_get_su_bin(dpt)
                 continue
             rawresp = dpt.diagnosis_write(cmd)
             # ignore first and last echos
