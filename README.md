@@ -49,7 +49,7 @@ In the interactive shell, type `fw` and follow the instructions.
 ### Development Roadmap
 
 Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we can explore more things! The things I am interested in:
-- [ ] Enabling ADB in normal Android mode
+- [x] Enabling ADB in normal Android mode
 - [ ] Enabling faster file transfer in diagnosis mode (so far it takes forever to push a file)
 - [ ] Allowing self-signed pkg (fw package) to flash
 - [ ] Exploring system modifications

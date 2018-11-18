@@ -139,7 +139,7 @@ class DPT():
             self.err_print("{} does not exist".format(fp))
             return False
         cmd = "dd if='{}' of=/dev/mmcblk0p8 bs=4M".format(fp)
-        self.info_print("Fingercrossing.. Do NOT power off device!")
+        self.info_print("Fingercrossing.. Do NOT touch the device!")
         # need to be extra careful here
         resp = self.diagnosis_write(cmd, timeout=99999)
         self.info_print(resp)
