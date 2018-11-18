@@ -19,7 +19,7 @@ Thanks for using DPT Tools. Type `help` to show this message.
 Supported commands:
     fw        -- update firmware
     root      -- obtain root access (thanks to shankerzhiwu and his/her anoymous friend)
-    diagnosis -- enter diagnosis mode (after you get root access)
+    diagnosis -- enter diagnosis mode (to gain adb, su, etc.)
     exit/quit -- leave the tool
 """)
 
