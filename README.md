@@ -23,9 +23,9 @@ This intends to be an interative shell commandline tool that wraps processes lik
 
 ### Prerequirement
 
-To use the tool properly, you also need `xxd`.
+To use the tool properly, you also need `xxd`. I expect this tool to work in Linux and Mac, but I have not tested it.
 
-### Validating successful connections
+### Validate successful connections (normal boot)
 
 ```
 python dpt-tools.py -id <deviceid file path> -k <your key file path> -ip <ip address>
@@ -35,13 +35,43 @@ Please refer to [janten's dpt-rp1-py](https://github.com/janten/dpt-rp1-py) on h
 
 Then you will enter the interactive shell mode. Press `Ctrl + C` to exit, or type `exit` or `quit`.
 
-### Obtaining diagnosis access
+### Obtain diagnosis access (normal boot)
 
-In the interactive shell, type `root`.
+In the interactive shell, type `root` and follow the instructions.
 
-### Update firmware from pkg file
+### Update firmware from pkg file (normal boot)
 
 In the interactive shell, type `fw` and follow the instructions.
+
+### Boot into diagnosis mode (after gaining diagnosis access)
+
+```
+python dpt-tools.py --diagnosis
+```
+
+Or in the original interative shell, type `diagnosis`. And then follow the instructions.
+
+### Obtain ADB and shell sudo access
+
+In the diagnosis mode, first backup your bootimg by `backup-bootimg`. It will back up the `boot.img` to `/root/boot.img.bak` and also automatically pull the file from device to the local folder (same as code directory). The pull will take about 20min. 
+
+Note: You actually do not need to back it up if you have the `boot.img` from firmware version 1.4.01.16100. If anything goes wrong, we can easily restore it using the `boot.img` from `python_api/assets/`.
+
+Run `restore-bootimg` and follow the instruction to update the boot partition with `python_api/assets/boot-1.4.01.16100-mod-happyz-181118.img`. It'll take about 15min to upload due to the limit of serial port. 
+
+After the upload, it will tell you the MD5 of that file in case of corruption. Please verify it carefully with the MD5 attached with the img you got. If not correct, do NOT restore it otherwise it is guaranteed to not boot up.
+
+It will ask you to confirm if you want to continue, type `yes` after you verify the MD5.
+
+After success, type `get-su-bin` to enable sudo access in shell.
+
+Finally, type `reboot &` and close the tool by pressing `Ctrl +C` or type `exit` or `quit`. 
+
+If everything goes right, it will boot up. And you can run `adb devices` on your computer to see if your DPT appears.
+
+It may appear to be `unauthorized`. Since I did not include a vulnerable `adbd`, I put a master public key in DPT at `/adb_keys`. Please use `python_api/assets/adbkey` to authenticate the device.
+
+After then, you can do `adb shell` and then type `su` to verify if you have obtained the sudo access. You can now use `adb install` to install any packages. However, it does appear that all third party apps have super small font. 
 
 
 ## To-Do List
@@ -50,10 +80,9 @@ In the interactive shell, type `fw` and follow the instructions.
 
 Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we can explore more things! The things I am interested in:
 - [x] Enabling ADB in normal Android mode
-- [ ] Enabling faster file transfer in diagnosis mode (so far it takes forever to push a file)
 - [ ] Allowing self-signed pkg (fw package) to flash
-- [ ] Exploring system modifications
-- [ ] Understand the supported apps
+- [ ] System language and font mod
+- [ ] Third-party apps verification
 
 ### Methods
 - [ ] Web interface hack
