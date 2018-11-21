@@ -8,6 +8,7 @@ Greatly thank
 * [shankerzhiwu and his/her friend at XDA](https://forum.xda-developers.com/general/help/idea-to-root-sonys-e-reader-dpt-rp1-t3654725/post78153143) who made the USB hack possible
 * [octavianx](https://github.com/octavianx/Unpack-and-rebuild-the-DPT-RP1-upgrade-firmware) who sheds light on the hack 
 * [janten](https://github.com/janten/dpt-rp1-py) who initiates the commandline tool for web APIs
+* `silvertriclops` who points out bugs in `get-su-bin` and "forces" me to test it :D
 
 # 0x2 What does DPT stand for?
 
@@ -63,11 +64,13 @@ After the upload, it will tell you the MD5 of that file in case of corruption. P
 
 It will ask you to confirm if you want to continue, type `yes` after you verify the MD5.
 
-### Obtain shell sudo access (not fully tested)
+### Obtain shell sudo access
 
-Thanks `silvertriclops` and I should have fixed my script. If not message me. If the following process fails, it should be recoverable. If you are not comfortable trying blackbox, just follow the `update-binary` in the SuperSU zip. Or you can choose to wait for a flashable pkg coming up. Even without su, you can still install APKs. 
+If the following process fails, it should be recoverable. Message me.
 
-After success, type `get-su-bin` to enable sudo access in shell.
+If you are not comfortable trying blackbox, just follow the `update-binary` in the SuperSU zip. Or you can choose to wait for a flashable pkg coming up. Even without su, you can still install APKs. 
+
+After success of `restore-bootimg`, type `get-su-bin` to enable sudo access in shell.
 
 Finally, type `reboot &` and close the tool by pressing `Ctrl +C` or type `exit` or `quit`. 
 

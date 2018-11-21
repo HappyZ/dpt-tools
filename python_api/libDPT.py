@@ -157,7 +157,7 @@ class DPT():
         mount system partition to mountpoint
         '''
         mountpoint = '/mnt/Lucifer'
-        if not self.diagnosis_mkdir(folder):
+        if not self.diagnosis_mkdir(mountpoint):
             return ""
         # umount first just in case
         self.diagnosis_write('umount {}'.format(mountpoint))
@@ -210,6 +210,12 @@ class DPT():
                 resp += tmpresp.decode("utf-8").replace("\r\r\n", '')
             # change back the original timeout
             self.serial.timeout = self.serialReadTimeout
+        except KeyboardInterrupt:
+            self.err_print("KeyboardInterrupt happened! Attempting to stop..")
+            self.serial.write(b'\x03')
+            while not '@FPX-' in resp:
+                tmpresp = self.serial.read_until(b'# ')
+                resp += tmpresp.decode("utf-8").replace("\r\r\n", '')
         except serial.SerialTimeoutException as e:
             self.err_print('Timeout: {}'.format(e))
             self.err_print("Do NOT panic. Command may be still running.")
