@@ -412,13 +412,13 @@ def diagnosis_get_su_bin(dpt):
     if dpt.diagnosis_isfile("{}_original".format(appprocess32fp)):
         dpt.diagnosis_remove_file(appprocess32fp)
     else:
-        dpt.diagnosis_write("mv {0} {0}_original".format(appprocessfp))
+        dpt.diagnosis_write("mv {0} {0}_original".format(appprocess32fp))
     dpt.diagnosis_ln(daemonsufp, "/system/bin/app_process32")
 
     dpt.info_print("Tweaking /system/bin/app_process_init..")
     if not dpt.diagnosis_isfile("{}_init".format(appprocessfp)):
         dpt.diagnosis_write(
-            "cp {0}_ori {1}_init".format(appprocess32fp, appprocessfp))
+            "cp {0}_original {1}_init".format(appprocess32fp, appprocessfp))
         dpt.diagnosis_set_perm(
             "{}_init".format(appprocessfp), owner='0.2000', perm='0755')
 
