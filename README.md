@@ -65,7 +65,7 @@ It will ask you to confirm if you want to continue, type `yes` after you verify 
 
 ### Obtain shell sudo access (not fully tested)
 
-Thanks `silvertriclops` and I should have fixed my script. If not message me. If the following process fails, it should be recoverable. If you are not comfortable trying blackbox, just following the `update-binary` in the SuperSU zip. Or you can choose to wait a flashable pkg coming up. Happy playing with your "new" ink-display tablet.
+Thanks `silvertriclops` and I should have fixed my script. If not message me. If the following process fails, it should be recoverable. If you are not comfortable trying blackbox, just follow the `update-binary` in the SuperSU zip. Or you can choose to wait for a flashable pkg coming up. Even without su, you can still install APKs. 
 
 After success, type `get-su-bin` to enable sudo access in shell.
 
@@ -76,7 +76,6 @@ If everything goes right, it will boot up. And you can run `adb devices` on your
 It may appear to be `unauthorized`. Since I did not include a vulnerable `adbd`, I put a master public key in DPT at `/adb_keys`. Please use `python_api/assets/adbkey` to authenticate the device.
 
 After then, you can do `adb shell` and then type `su` to verify if you have obtained the sudo access. You can now use `adb install` to install any packages. However, it does appear that all third party apps have super small font. 
-
 
 ## To-Do List
 
@@ -96,6 +95,14 @@ Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we ca
 - [ ] ~~Official app~~ (fails as the firmware updates purely rely on web interface API)
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zhuyanzi@gmail.com&item_name=A+Cup+Of+Coffee&item_number=Thank+You&currency_code=USD)
+
+# Other tips
+
+## Open settings via commandline
+
+```
+adb shell am start -a android.settings.SETTINGS
+```
 
 # 0xF Mission Impossible
 
