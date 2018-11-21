@@ -97,7 +97,7 @@ def main():
         print(e)
         sys.exit()
 
-    dpt = DPT(args.get('apt_addr', None), args.get('debug', False))
+    dpt = DPT(args.get('dpt_addr', None), args.get('debug', False))
     if (
         not args.get('diagnosis', False) and 
         not dpt.authenticate(args.get('dpt_id', ""), args.get('dpt_key', ""))
