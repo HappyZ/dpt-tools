@@ -89,7 +89,7 @@ OFFSET_IV=$((OFFSET_DATAKEY_E + DATAKEY_E_SIZE))
 dd if=$PKGFILE of=$IVFILE bs=1 skip=$OFFSET_IV count=32 2>/dev/null
 
 echo "* decrypt data to zipped tar.."
-dd if=$PKGFILE bs=$((OFFSET_DATA)) skip=1 2>/dev/null | head -c $((DATA_SIZE)) | openssl enc -d -aes-256-cbc -K `cat $AESFILE` -iv `cat $IVFILE` > $OUTDIR/decrypted_pkg.tar.gz
+dd if=$PKGFILE bs=$((OFFSET_DATA)) skip=1 2>/dev/null | head -c $((DATA_SIZE)) | openssl enc -d -aes-256-cbc -K "$(cat $AESFILE)" -iv "$(cat $IVFILE)" > $OUTDIR/decrypted_pkg.tar.gz
 
 echo "* unzip data.."
 tar -xzf $OUTDIR/decrypted_pkg.tar.gz -C $OUTDIR
