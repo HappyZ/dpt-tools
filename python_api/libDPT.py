@@ -135,7 +135,7 @@ class DPT():
         '''
         mkdir -p folder
         '''
-        if not self.diagnosis_isfolder(folder):
+        if self.diagnosis_isfolder(folder):
             self.info_print("{} already exist".format(folder))
             return True
         if not self.diagnosis_write('mkdir -p {}'.format(folder)):
