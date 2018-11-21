@@ -405,7 +405,7 @@ def diagnosis_get_su_bin(dpt):
     dpt.info_print("Tweaking /system/bin/app_process..")
     appprocessfp = '{0}/bin/app_process'.format(mountpoint)
     dpt.diagnosis_write('mv {0} {0}_bak'.format(appprocessfp))
-    dpt.diagnosis_ln(daemonsufp, "/system/bin/app_process")
+    dpt.diagnosis_ln("/system/xbin/daemonsu", appprocessfp)
 
     dpt.info_print("Tweaking /system/bin/app_process32..")
     appprocess32fp = '{0}32'.format(appprocessfp)
@@ -413,7 +413,7 @@ def diagnosis_get_su_bin(dpt):
         dpt.diagnosis_remove_file(appprocess32fp)
     else:
         dpt.diagnosis_write("mv {0} {0}_original".format(appprocess32fp))
-    dpt.diagnosis_ln(daemonsufp, "/system/bin/app_process32")
+    dpt.diagnosis_ln("/system/xbin/daemonsu", appprocess32fp)
 
     dpt.info_print("Tweaking /system/bin/app_process_init..")
     if not dpt.diagnosis_isfile("{}_init".format(appprocessfp)):
