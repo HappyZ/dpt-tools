@@ -51,7 +51,7 @@ python dpt-tools.py --diagnosis
 
 Or in the original interative shell, type `diagnosis`. And then follow the instructions.
 
-### Obtain ADB and shell sudo access
+### Obtain ADB (with modified boot.img)
 
 In the diagnosis mode, first backup your bootimg by `backup-bootimg`. It will back up the `boot.img` to `/root/boot.img.bak` and also automatically pull the file from device to the local folder (same as code directory). The pull will take about 20min. 
 
@@ -62,6 +62,10 @@ Run `restore-bootimg` and follow the instruction to update the boot partition wi
 After the upload, it will tell you the MD5 of that file in case of corruption. Please verify it carefully with the MD5 attached with the img you got. If not correct, do NOT restore it otherwise it is guaranteed to not boot up.
 
 It will ask you to confirm if you want to continue, type `yes` after you verify the MD5.
+
+### Obtain shell sudo access (not fully tested)
+
+Thanks `silvertriclops` and I should have fixed my script. If not message me. If the following process fails, it should be recoverable. If you are not comfortable trying blackbox, just following the `update-binary` in the SuperSU zip. Or you can choose to wait a flashable pkg coming up. Happy playing with your "new" ink-display tablet.
 
 After success, type `get-su-bin` to enable sudo access in shell.
 
