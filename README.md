@@ -87,7 +87,8 @@ After then, you can do `adb shell` and then type `su` to verify if you have obta
 Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we can explore more things! The things I am interested in:
 - [x] Enabling ADB in normal Android mode
 - [ ] Allowing self-signed pkg (fw package) to flash
-- [ ] System language and font mod
+- [x] System language
+- [ ] Font size mod
 - [ ] Third-party apps verification
 
 ### Methods
@@ -105,6 +106,14 @@ Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we ca
 
 ```
 adb shell am start -a android.settings.SETTINGS
+```
+
+### Switch language
+
+Only three are supported: Chinese, English, and Japanese
+
+```
+adb shell am start -a android.settings.LOCALE_SETTINGS
 ```
 
 # 0xF Mission Impossible
