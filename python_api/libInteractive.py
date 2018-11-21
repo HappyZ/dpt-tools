@@ -72,8 +72,8 @@ def disable_id_check(dpt):
                 return False
             try:
                 input(
-                    '>>> Press `Enter` key to continue after your DPT reboot, ' +
-                    'shows `update failure` message, and connects back to WiFi: ')
+                    '>>> After your DPT reboots, shows `update failure` message, ' +
+                    'connects back to WiFi, etc., press `Enter` key to continue')
             except BaseException as e:
                 dpt.err_print(str(e))
                 return False
