@@ -140,7 +140,7 @@ It behaves similarly to regular serial session with less flexibility (cannot use
 This mode intends to automate some complicated procedures.
 
 Supported commands:
-    `push-file`         -- transfer file to DPT at 512bps
+    `push-file`         -- transfer file to DPT at 800bps (=100Bps)
     `pull-file`         -- transfer file from DPT
     `backup-bootimg`    -- backup the boot img and download it to local device
     `restore-bootimg`   -- restore the boot img
@@ -235,18 +235,18 @@ def diagnosis_pull_file(
 
 
 def diagnosis_push_file(
-    dpt, chunkSize=128, localfp=None, folder=None, overwrite=None
+    dpt, chunkSize=200, localfp=None, folder=None, overwrite=None
 ):
     '''
     push file from local to device through echo in diagnosis
     (serial) mode
     using echo is dumb and slow but very reliable
-    limited to 128 bytes per cmd or below, since we send raw bytes
+    limited to 200 bytes per cmd or below, since we send raw bytes
     in string (each byte sent = 4 bytes), and terminal at best
     allows 1024 bytes to send
     do NOT push large file using this, it will take
     forever to finish..
-    as a reference: push a 16MB file costs you roughly 22min
+    as a reference: push a 11.2MB file costs you roughly 22min
     '''
     try:
         # get local file path
@@ -272,6 +272,11 @@ def diagnosis_push_file(
                     return None
         # remote file exists, overwrite it?
         remotefp = "{0}/{1}".format(folder, os.path.basename(localfp))
+        # check if the file path is too long
+        if len(remotefp) > 160:
+            dpt.err_print(
+                "DPT file path `{}` is beyond 160 chars!".format(remotefp))
+            return None
         if overwrite is None:
             overwrite = True
             if dpt.diagnosis_isfile(remotefp):
@@ -364,7 +369,7 @@ def diagnosis_get_su_bin(dpt):
     extfolder = "{}/bin/.ext".format(mountpoint)
     dpt.diagnosis_mkdir(extfolder)
     dpt.diagnosis_set_perm(extfolder, owner='0.0', perm='0777')
-    dpt.diagnosis_write('cp {0} {1}/su'.format(sufp, extfolder))
+    dpt.diagnosis_write('cp {0} {1}/.su'.format(sufp, extfolder))
 
     dpt.info_print("Uploading supolicy file to /system/xbin..")
     supolicyfp = diagnosis_push_file(
