@@ -93,7 +93,7 @@ Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we ca
 ### Methods
 - [ ] Web interface hack
 - [X] USB interface hack ([shankerzhiwu and his/her friend at XDA](https://forum.xda-developers.com/general/help/idea-to-root-sonys-e-reader-dpt-rp1-t3654725/post78153143) did this! Great work!)
-- [ ] ~~Build update package and flash~~ (fails as we cannot bypass pkg validation, but I can confirm the current paid hacking method can, meaning they obtained the required private key from somewhere)
+- [ ] ~~Build update package and flash~~ (fails as we cannot bypass pkg validation)
 - [ ] ~~Web interface testmode~~ (fails as we do not have `auth nonce` and required private key `K_PRIV_DT`)
 - [ ] ~~Official app~~ (fails as the firmware updates purely rely on web interface API)
 
