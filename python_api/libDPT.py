@@ -293,6 +293,7 @@ class DPT():
         self._get_api_with_cookies("/extensions/configs/{0}".format("{item}"))
 
     def update_firmware(self, fwfh):
+        self.info_print("fw updating in progress.. do NOT press anything..")
         filename = 'FwUpdater.pkg'
         # upload file
         response = self._put_api_with_cookies(
