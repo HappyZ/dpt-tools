@@ -527,9 +527,10 @@ def diagnosis_mode(dpt):
         ttyName = input('>>> Enter the serial port [/dev/tty.usbmodem01]: ')
         if ttyName == "":
             ttyName = "/dev/tty.usbmodem01"
-        if not os.path.exists(ttyName):
-            dpt.err_print('serial `{}` not exists!'.format(ttyName))
-            return False
+        # disable file check here since Windows is different
+        # if not os.path.exists(ttyName):
+        #     dpt.err_print('serial `{}` not exists!'.format(ttyName))
+        #     return False
     except BaseException as e:
         dpt.err_print(str(e))
         return False
