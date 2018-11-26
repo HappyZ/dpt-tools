@@ -1,6 +1,8 @@
 # 0x0 Welcome
 
-We likely have some fun stuff here!
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zhuyanzi@gmail.com&item_name=A+Cup+Of+Coffee&item_number=Thank+You&currency_code=USD)
+
+We likely have some fun stuff here! 
 
 # 0x1 Special Thanks
 
@@ -16,17 +18,23 @@ Greatly thank
 
 # 0x3 Tools
 
-## dpt-tools.py
+## dpt-tools.py - Automation to gain root, adb, and sudo access
 
-NOTE: Use at your own risk. I have tested this on my *MacBook*. You need `pip install httpsig pyserial` if you don't have it already. It only runs on Python 3.
+**Heads up!** Use at your own risk. It has only been fully tested on Macbook Pro.
 
-This intends to be an interative shell commandline tool that wraps processes like updating firmware pkg, obtaining diagnosis access, etc.
+This is an interative shell commandline tool that wraps processes like updating firmware pkg, obtaining diagnosis access, etc.
 
 ### Prerequirement
 
-To use the tool properly, you also need `xxd`. I expect this tool to work in Linux and Mac, but I have not tested it.
+To use the tool properly, you need:
+* Python 3.x
+  * `pip install httpsig pyserial`
+* MacOS/Linux with support of `xxd` command (will remove this requirement soon)
+  * Windows may use MinGW, some find it working, but it has not been fully tested
 
-### Validate successful connections (normal boot)
+### At Normal Boot Up
+
+To ***validate a successful connection***,
 
 ```
 python dpt-tools.py -id <deviceid file path> -k <your key file path> -ip <ip address>
@@ -36,47 +44,42 @@ Please refer to [janten's dpt-rp1-py](https://github.com/janten/dpt-rp1-py) on h
 
 Then you will enter the interactive shell mode. Press `Ctrl + C` to exit, or type `exit` or `quit`.
 
-### Obtain diagnosis access (normal boot)
+To ***update firmware from pkg file***, type `fw` and follow the instructions.
 
-In the interactive shell, type `root` and follow the instructions.
+To ***obtain diagnosis access***, type `root` and follow the instructions. 
 
-### Update firmware from pkg file (normal boot)
-
-In the interactive shell, type `fw` and follow the instructions.
-
-### Boot into diagnosis mode (after gaining diagnosis access)
+To ***enter diagnosis mode***, type `diagnosis` and follow the instructions. Or directly use:
 
 ```
 python dpt-tools.py --diagnosis
 ```
 
-Or in the original interative shell, type `diagnosis`. And then follow the instructions.
+### At Diagnosis Mode
 
-### Obtain ADB (with modified boot.img)
+To ***obtain ADB access***, we need to flash a modified `boot.img` (`boot-1.4.01.16100-mod-happyz-181118.img`). 
+It is confirmed to work on RP1 version `1.4.01.16100` and on CP1 version `1.4.02.09061` (thanks to `mingming1222`).
 
-In the diagnosis mode, first backup your bootimg by `backup-bootimg`. It will back up the `boot.img` to `/root/boot.img.bak` and also automatically pull the file from device to the local folder (same as code directory). The pull will take about 20min. 
+```
+### If your device is not on above versions, do NOT flash
+### 1: Backup boot image: via `backup-bootimg`
+###    The backup image on device is at `/root/boot.img.bak`
+###    It also automatically pulls the backup to local folder
+###    It takes about 15-20min. Carefully confirm the MD5 of the pulled file.
+###    If not correct, backup AGAIN.
+### 2: Apply the new boot image: via `restore-bootimg`
+###    Use `python_api/assets/boot-1.4.01.16100-mod-happyz-181118.img`
+###    It takes about 15-20min. Carefully confirm the MD5 of the pushed file.
+###    If not correct, do NOT type `yes` to restore it.
+```
 
-Note: You actually do not need to back it up if you have the `boot.img` from firmware version 1.4.01.16100. If anything goes wrong, we can easily restore it using the `boot.img` from `python_api/assets/`.
 
-Run `restore-bootimg` and follow the instruction to update the boot partition with `python_api/assets/boot-1.4.01.16100-mod-happyz-181118.img`. It'll take about 15min to upload due to the limit of serial port. 
+It may appear to be `unauthorized`. Since I did not include a vulnerable `adbd`, I put a master public key in DPT at `/adb_keys`. Please use `python_api/assets/adbkey` to authenticate the device. This causes an insecure ADB due to `/adb_keys`. I will fix this in later updates.
 
-After the upload, it will tell you the MD5 of that file in case of corruption. Please verify it carefully with the MD5 attached with the img you got. If not correct, do NOT restore it otherwise it is guaranteed to not boot up.
-
-It will ask you to confirm if you want to continue, type `yes` after you verify the MD5.
-
-### Obtain shell sudo access
-
-If the following process fails, it should be recoverable. Message me.
-
-If you are not comfortable trying blackbox, just follow the `update-binary` in the SuperSU zip. Or you can choose to wait for a flashable pkg coming up. Even without su, you can still install APKs. 
-
-After success of `restore-bootimg`, type `get-su-bin` to enable sudo access in shell.
+To ***obtain shell sudo access***, type `get-su-bin` and follow the instructions.
 
 Finally, type `reboot &` and close the tool by pressing `Ctrl +C` or type `exit` or `quit`. 
 
 If everything goes right, it will boot up. And you can run `adb devices` on your computer to see if your DPT appears.
-
-It may appear to be `unauthorized`. Since I did not include a vulnerable `adbd`, I put a master public key in DPT at `/adb_keys`. Please use `python_api/assets/adbkey` to authenticate the device.
 
 After then, you can do `adb shell` and then type `su` to verify if you have obtained the sudo access. You can now use `adb install` to install any packages. However, it does appear that all third party apps have super small font. 
 
@@ -88,8 +91,8 @@ Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we ca
 - [x] Enabling ADB in normal Android mode
 - [ ] Allowing self-signed pkg (fw package) to flash
 - [x] System language
-- [ ] Font size mod
-- [ ] Third-party apps verification
+- [ ] Launcher modification
+- [ ] Third-party app font size issue fix
 
 ### Methods
 - [ ] Web interface hack
@@ -97,8 +100,6 @@ Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we ca
 - [ ] ~~Build update package and flash~~ (fails as we cannot bypass pkg validation)
 - [ ] ~~Web interface testmode~~ (fails as we do not have `auth nonce` and required private key `K_PRIV_DT`)
 - [ ] ~~Official app~~ (fails as the firmware updates purely rely on web interface API)
-
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zhuyanzi@gmail.com&item_name=A+Cup+Of+Coffee&item_number=Thank+You&currency_code=USD)
 
 # Other tips
 
