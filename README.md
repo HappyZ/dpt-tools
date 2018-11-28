@@ -91,7 +91,7 @@ Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we ca
 - [x] Enabling ADB in normal Android mode
 - [ ] Allowing self-signed pkg (fw package) to flash
 - [x] System language
-- [ ] Launcher modification
+- [x] Launcher modification (commandline figured)
 - [ ] Third-party app font size issue fix
 
 ### Methods
@@ -103,7 +103,7 @@ Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we ca
 
 # Other tips
 
-## Open settings via commandline
+### Open settings via commandline
 
 ```
 adb shell am start -a android.settings.SETTINGS
@@ -116,6 +116,57 @@ Only three are supported: Chinese, English, and Japanese
 ```
 adb shell am start -a android.settings.LOCALE_SETTINGS
 ```
+
+### Switch input method
+
+```
+adb shell am start -a android.settings.INPUT_METHOD_SETTINGS
+```
+
+If you saw error dialog `Unfortunately, the iWnn IME keyboard has stopped`, this is (potentially) due to the language switch that enables an extra input method. Just go in the `Keyboard & input methods` and only enable `iWnnkbd IME`.
+
+### Launcher app
+
+DPT Launcher is funny. It uses `ExtensionManagerService` that scans through `/etc/dp_extensions`. Ideally we shall have an automated tool to add/remove icons (not a plan), but for now, a commandline approach is the following:
+
+Re-mount your system to be writable (requiring sudo), and then use `NoteCreator` as a template:
+
+```
+> adb shell
+$ su
+# mount -o rw,remount /system
+# cd /etc/dp_extensions
+# cp -R NoteCreator MyTemplate
+```
+
+Then we need to change the filenames:
+```
+mv NoteCreator_extension.xml MyTemplate_extension.xml
+mv NoteCreator_strings-en.xml MyTemplate_strings-en.xml
+mv NoteCreator_strings-ja.xml MyTemplate_strings-ja.xml
+mv NoteCreator_strings-zh_CN.xml MyTemplate_strings-zh_CN.xml
+mv ic_homemenu_createnote.png ic_homemenu_mytemplate.png
+```
+
+Finally, we need to edit each file (use `busybox vi file/path/filename`):
+1. For MyTemplate_extension.xml (`****` is the Android app intent name, e.g., `com.android.browser/.BrowserActivity`):
+```
+<?xml version="1.0" encoding="utf-8"?>
+
+<Application name="MyTemplate" type="System" version="1">
+    <LauncherEntry name="MyTemplate" category="Launcher" uri="intent:#Intent;component=****;end" string="STR_ICONMENU_9999" icon="ic_homemenu_mytemplate.png" order="999"/>
+</Application>
+```
+2. For each `****_strings-****.xml`:
+```
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <string name="STR_ICONMENU_9999">MyTemplate</string>
+</resources>
+```
+3. You can upload a different png for icon `ic_homemenu_mytemplate.png`
+4. Reboot
+
 
 # 0xF Mission Impossible
 
