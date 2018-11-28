@@ -101,7 +101,15 @@ Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we ca
 - [ ] ~~Web interface testmode~~ (fails as we do not have `auth nonce` and required private key `K_PRIV_DT`)
 - [ ] ~~Official app~~ (fails as the firmware updates purely rely on web interface API)
 
-# Other tips
+## fw_updater_packer_unpacker - Automation to pack/unpack pkg
+
+Run `./unpacker_pkg.sh <file/path/pkg> <output/folder>` to unpack the official pkg file.
+
+Run `./prepacker_pkg.sh <input/folder>` to repack. Note you need to provide `key.private_sig`. This is unknown for the official pkg file. 
+
+If we change pkg verification, it means we can no longer update via the official pkg. Therefore, the best practice would be writing our own pkg updater to `boot.img`, so it won't block the update of the official pkg.
+
+# 0x4 Other tips
 
 ### Open settings via commandline
 
@@ -165,7 +173,8 @@ Finally, we need to edit each file (use `busybox vi file/path/filename`):
 </resources>
 ```
 3. You can upload a different png for icon `ic_homemenu_mytemplate.png`
-4. Reboot
+4. Make sure the files under `MyTemplate` are all permission `0644` (`ls -la *` and `chmod 0644 *`).
+5. Reboot
 
 
 # 0xF Mission Impossible
