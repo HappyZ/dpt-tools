@@ -157,7 +157,7 @@ Finally, we need to edit each file (use `busybox vi file/path/filename`):
     <LauncherEntry name="MyTemplate" category="Launcher" uri="intent:#Intent;component=****;end" string="STR_ICONMENU_9999" icon="ic_homemenu_mytemplate.png" order="999"/>
 </Application>
 ```
-2. For each `_strings-en.xml`:
+2. For each `****_strings-****.xml`:
 ```
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
