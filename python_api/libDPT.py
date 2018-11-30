@@ -477,8 +477,12 @@ class DPT():
             self.err_print("cannot get nonce")
             return False
         sig_maker = httpsig.Signer(secret=key, algorithm='rsa-sha256')
-        signed_nonce = sig_maker._sign(nonce)
-
+        try:
+            signed_nonce = sig_maker._sign(nonce)
+        except AttributeError:
+            signed_nonce = sig_maker.sign(nonce)
+        except BaseException as e:
+            print("err:" + str(e))
         return self._put_auth(
             {"client_id": client_id, "nonce_signed": signed_nonce})
 
