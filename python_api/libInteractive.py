@@ -18,10 +18,15 @@ def update_firmware(dpt):
         'Please make sure you have charged your battery before this action.')
     try:
         resp = input('>>> Please enter the pkg file path: ')
+        while resp[-1] == ' ':  # remove extra spaces
+            resp = resp[:-1]
         if not os.path.isfile(resp):
             dpt.err_print('File `{}` does not exist!'.format(resp))
             return False
-        resp2 = input('>>> Pleae confirm {} is the pkg file to use [yes/no]: ')
+        resp2 = input(
+            '>>> Pleae confirm {} is the pkg file to use [yes/no]: '
+            .format(resp)
+        )
         if resp2 == 'yes':
             if not dpt.update_firmware(open(resp, 'rb')):
                 dpt.err_print('Failed to upload pkg {}'.format(resp))
