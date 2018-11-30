@@ -103,11 +103,7 @@ Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we ca
 
 ## fw_updater_packer_unpacker - Automation to pack/unpack pkg
 
-Run `./unpacker_pkg.sh <file/path/pkg> <output/folder>` to unpack the official pkg file.
-
-Run `./prepacker_pkg.sh <input/folder>` to repack. Note you need to provide `key.private_sig`. This is unknown for the official pkg file. 
-
-If we change pkg verification, it means we can no longer update via the official pkg. Therefore, the best practice would be writing our own pkg updater to `boot.img`, so it won't block the update of the official pkg.
+Check [this README](https://github.com/HappyZ/dpt-tools/blob/master/fw_updater_packer_unpacker/README.md)
 
 # 0x4 Other tips
 
