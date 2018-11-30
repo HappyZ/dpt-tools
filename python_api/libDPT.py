@@ -483,6 +483,7 @@ class DPT():
             signed_nonce = sig_maker.sign(nonce)
         except BaseException as e:
             print("err:" + str(e))
+            return False
         return self._put_auth(
             {"client_id": client_id, "nonce_signed": signed_nonce})
 
