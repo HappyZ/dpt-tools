@@ -95,7 +95,7 @@ Check [this README](https://github.com/HappyZ/dpt-tools/blob/master/fw_updater_p
 
 Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we can explore more things! The things I am interested in:
 - [x] Enabling ADB in normal Android mode
-- [ ] Allowing self-signed pkg (fw package) to flash
+- [x] Allowing self-signed pkg (fw package) to flash
 - [x] System language
 - [x] Launcher modification (commandline figured)
 - [ ] Third-party app font size issue fix
