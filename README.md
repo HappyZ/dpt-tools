@@ -143,6 +143,7 @@ $ su
 # mount -o rw,remount /system
 # cd /etc/dp_extensions
 # cp -R NoteCreator MyTemplate
+# cd MyTemplate
 ```
 
 Then we need to change the filenames:
