@@ -91,7 +91,7 @@ Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we ca
 - [x] Enabling ADB in normal Android mode
 - [ ] Allowing self-signed pkg (fw package) to flash
 - [x] System language
-- [x] Launcher modification (commandline figured, issue #11 remains)
+- [x] Launcher modification (commandline figured)
 - [ ] Third-party app font size issue fix
 
 ### Methods
@@ -131,8 +131,6 @@ If you saw error dialog `Unfortunately, the iWnn IME keyboard has stopped`, this
 
 ### Launcher app
 
-(found cases where cache prevents recovering from AppLauncher crashes if things go wrong #11, proceed the following carefully)
-
 DPT Launcher is funny. It uses `ExtensionManagerService` that scans through `/etc/dp_extensions`. Ideally we shall have an automated tool to add/remove icons (not a plan), but for now, a commandline approach is the following:
 
 Re-mount your system to be writable (requiring sudo), and then use `NoteCreator` as a template:
@@ -171,9 +169,15 @@ Finally, we need to edit each file (use `busybox vi file/path/filename`):
   <string name="STR_ICONMENU_9999">MyTemplate</string>
 </resources>
 ```
-3. ~~You can upload a different png for icon `ic_homemenu_mytemplate.png`~~ (#11 random png may not decode right??)
+3. You can upload a different png for icon `ic_homemenu_mytemplate.png` (must be 220x120 size)
 4. Make sure the files under `MyTemplate` are all permission `0644` (`ls -la /etc/dp_extensions/MyTemplate/*` and `chmod 0644 /etc/dp_extensions/MyTemplate/*`).
-5. Reboot
+5. Remove the database (cache) from the Extension Manager and allow it to rebuid the database:
+```
+cd /data/system
+mv ExtMgr.db ExtMgr.db_bak
+mv ExtMgr.db-journal ExtMgr.db-journal_bak
+```
+6. Reboot
 
 
 # 0xF Mission Impossible
