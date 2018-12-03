@@ -83,6 +83,12 @@ If everything goes right, it will boot up. And you can run `adb devices` on your
 
 After then, you can do `adb shell` and then type `su` to verify if you have obtained the sudo access. You can now use `adb install` to install any packages. However, it does appear that all third party apps have super small font. 
 
+## fw_updater_packer_unpacker - Automation to pack/unpack pkg
+
+To flash pkg with unverified signature, you need to modify the updater file at `/usr/local/bin/start_eufwupdater.sh`.
+
+Check [this README](https://github.com/HappyZ/dpt-tools/blob/master/fw_updater_packer_unpacker/README.md) for more details.
+
 ## To-Do List
 
 ### Development Roadmap
@@ -100,10 +106,6 @@ Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we ca
 - [ ] ~~Build update package and flash~~ (fails as we cannot bypass pkg validation)
 - [ ] ~~Web interface testmode~~ (fails as we do not have `auth nonce` and required private key `K_PRIV_DT`)
 - [ ] ~~Official app~~ (fails as the firmware updates purely rely on web interface API)
-
-## fw_updater_packer_unpacker - Automation to pack/unpack pkg
-
-Check [this README](https://github.com/HappyZ/dpt-tools/blob/master/fw_updater_packer_unpacker/README.md)
 
 # 0x4 Other tips
 
