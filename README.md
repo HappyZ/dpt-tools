@@ -172,7 +172,7 @@ Finally, we need to edit each file (use `busybox vi file/path/filename`):
 </resources>
 ```
 3. ~~You can upload a different png for icon `ic_homemenu_mytemplate.png`~~ (#11 random png may not decode right??)
-4. Make sure the files under `MyTemplate` are all permission `0644` (`ls -la *` and `chmod 0644 *`).
+4. Make sure the files under `MyTemplate` are all permission `0644` (`ls -la /etc/dp_extensions/*` and `chmod 0644 /etc/dp_extensions/*`).
 5. Reboot
 
 
