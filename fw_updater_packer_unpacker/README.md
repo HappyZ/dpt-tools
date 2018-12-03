@@ -2,7 +2,7 @@
 
 This will create SECURITY FLAW in your system!
 
-Comment out the key verification: (edit via `busybox vi`)
+Comment out the key verification in file `/usr/local/bin/start_eufwupdater.sh`: (edit via `busybox vi`)
 ```
 ########################################
 # verify sig
