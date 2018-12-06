@@ -73,7 +73,15 @@ It is confirmed to work on RP1 version `1.4.01.16100` and on CP1 version `1.4.02
 ```
 
 
-It may appear to be `unauthorized`. Since I did not include a vulnerable `adbd`, I put a master public key in DPT at `/adb_keys`. Please use `python_api/assets/adbkey` to authenticate the device. This causes an insecure ADB due to `/adb_keys`. I will fix this in later updates.
+It may appear to be `unauthorized`. Since I did not include a vulnerable `adbd`, I put a master public key in DPT at `/adb_keys`. This causes an insecure ADB due to `/adb_keys`. I will fix this in later updates.
+
+To address `unauthorized`, on your computer (Mac or Linux), 
+```
+mv ~/.android/adbkey ~/.android/adbkey_bak
+cp python_api/assets/adbkey ~/.android/adbkey
+adb kill-server
+adb devices
+```
 
 To ***obtain shell sudo access***, type `get-su-bin` and follow the instructions.
 
