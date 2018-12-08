@@ -36,6 +36,12 @@ class DPT():
         # holder of diagnosis serial
         self.serial = None
         self.serialReadTimeout = 1  # default read timeout is 1sec
+        # misc
+        self.sd_tmp_mpt = "/mnt/sdtmp"
+        self.sys_tmp_mpt = "/mnt/Lucifer"
+        self.par_boot = "/dev/mmcblk0p8"
+        self.par_system = "/dev/mmcblk0p9"
+        self.par_sd = "/dev/mmcblk0p16"
 
     '''
     diagnosis mode related
@@ -154,39 +160,88 @@ class DPT():
 
     def diagnosis_mount_system(self):
         '''
-        mount system partition to mountpoint
+        mount system partition to self.sys_tmp_mpt
         '''
-        mountpoint = '/mnt/Lucifer'
-        if not self.diagnosis_mkdir(mountpoint):
+        if not self.diagnosis_mkdir(self.sys_tmp_mpt):
             return ""
         # umount first just in case
-        self.diagnosis_write('umount {}'.format(mountpoint))
+        self.diagnosis_write("umount {}".format(self.sys_tmp_mpt))
         # mount system partition (/dev/mmcblk0p9)
-        self.diagnosis_write('mount /dev/mmcblk0p9 {}'.format(mountpoint))
-        if self.diagnosis_isfolder('{}/xbin'.format(mountpoint)):
-            return mountpoint
+        self.diagnosis_write(
+            "mount {0} {1}".format(self.par_system, self.sys_tmp_mpt))
+        if self.diagnosis_isfolder('{}/xbin'.format(self.sys_tmp_mpt)):
+            return self.sys_tmp_mpt
         return ""
 
-    def diagnosis_backup_boot(self):
+    def diagnosis_mount_sd(self):
         '''
-        back up boot partition to /tmp/ folder
+        mount mass storage to self.sd_tmp_mpt
         '''
-        cmd = 'dd if=/dev/mmcblk0p8 of=/root/boot.img.bak bs=4M'
+        if not self.diagnosis_mkdir(self.sd_tmp_mpt):
+            return ""
+        # umount first just in case
+        self.diagnosis_umount_sd()
+        # mount sd partition
+        resp = self.diagnosis_write(
+            "mount {0} {1}".format(self.par_sd, self.sd_tmp_mpt))
+        return not (resp == "")
+
+    def diagnosis_umount_sd(self):
+        '''
+        umount mass storage from self.sd_tmp_mpt
+        '''
+        resp = self.diagnosis_write("umount {}".format(self.sd_tmp_mpt))
+        return not (resp == "")
+
+    def diagnosis_backup_boot(self, ofp="/root/boot.img.bak", toSD=False):
+        '''
+        back up boot partition output file path
+        @param ofp: output file path
+        @param toSD: if set, will copy the file to sdcard
+        '''
+        cmd = "dd if={0} of={1} bs=4M".format(self.par_boot, ofp)
         self.diagnosis_write(cmd, timeout=999)
-        if not self.diagnosis_isfile('/root/boot.img.bak'):
+        if not self.diagnosis_isfile(ofp):
             self.err_print('Failed to dump boot.img.bak!')
             return ""
-        return "/root/boot.img.bak"
+        if toSD:
+            self.diagnosis_mount_sd()
+            self.diagnosis_write("cp {0} {1}/".format(ofp, self.sd_tmp_mpt))
+            self.diagnosis_umount_sd()
+            self.info_print("Copied {} to mass storage".format(ofp))
+        return ofp
 
-    def diagnosis_restore_boot(self, fp="/root/boot.img.bak"):
+    def diagnosis_restore_boot(self, fp="/root/boot.img.bak", fromSD=False):
+        if fromSD:
+            self.diagnosis_mount_sd()
+            if not self.diagnosis_isfile(fp):
+                fp = "{0}/{1}".format(self.sd_tmp_mpt, fp)
         if not self.diagnosis_isfile(fp):
             self.err_print("{} does not exist".format(fp))
             return False
-        cmd = "dd if='{}' of=/dev/mmcblk0p8 bs=4M".format(fp)
+        cmd = "dd if='{0}' of={1} bs=4M".format(fp, self.par_boot)
         self.info_print("Fingercrossing.. Do NOT touch the device!")
         # need to be extra careful here
         resp = self.diagnosis_write(cmd, timeout=99999)
         self.info_print(resp)
+        if fromSD:
+            self.diagnosis_umount_sd()
+        return not (resp == "")
+
+    def diagnosis_start_mass_storage(self):
+        '''
+        run mass_storage
+        '''
+        resp = self.diagnosis_write('/usr/local/bin/mass_storage &')
+        self.dbg_print(resp)
+        return not (resp == "")
+
+    def diagnosis_stop_mass_storage(self):
+        '''
+        run mass_storage
+        '''
+        resp = self.diagnosis_write('killall mass_storage')
+        self.dbg_print(resp)
         return not (resp == "")
 
     def diagnosis_write(self, cmd, echo=False, timeout=99):
@@ -237,7 +292,7 @@ class DPT():
             return ""
         if not echo:
             resp = resp.replace(cmd, '')
-        self.dbg_print("len of {}; dbg: ".format(len(resp), resp.splitlines()))
+        self.dbg_print("len of {}; dbg: {}".format(len(resp), resp.splitlines()))
         return resp
 
 

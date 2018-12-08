@@ -329,17 +329,35 @@ def diagnosis_backup_bootimg(dpt):
     '''
     backup boot img and then pull img from DPT to local disk
     '''
-    remotefp = dpt.diagnosis_backup_boot()
-    # pull this backup file to current folder
-    if remotefp:
-        fp = diagnosis_pull_file(
-            dpt, remotefp=remotefp, folder=".", overwrite=True
-        )
-        if fp is not None:
-            dpt.info_print("Success!")
-            return True
-    dpt.info_print("Nothing happened..")
-    return False
+    remotefp = dpt.diagnosis_backup_boot(toSD=True)
+    md5 = dpt.diagnosis_md5sum_file(remotefp)
+    dpt.info_print("Success!")
+    # mount mass storage to allow quick copy of backup
+    dpt.diagnosis_start_mass_storage()
+    dpt.info_print("Your computer shall have mounted a disk.")
+    dpt.info_print("Please open that disk and copy your backup")
+    dpt.info_print("`boot.img.bak` to a safe place.")
+    dpt.info_print("Also, check if its MD5 is: {}.".format(md5))
+    dpt.info_print("After then you can delete the file in that disk.")
+    try:
+        input(
+            "While done, please eject the disk, " +
+            "and press Enter key to continue..")
+        dpt.diagnosis_stop_mass_storage()
+    except KeyboardInterrupt:
+        dpt.err_print("Nothing happened..")
+        dpt.diagnosis_stop_mass_storage()
+        return False
+    # # pull this backup file to current folder
+    # if remotefp:
+    #     fp = diagnosis_pull_file(
+    #         dpt, remotefp=remotefp, folder=".", overwrite=True
+    #     )
+    #     if fp is not None:
+    #         dpt.info_print("Success!")
+    #         return True
+    # dpt.info_print("Nothing happened..")
+    # return False
 
 
 def diagnosis_get_su_bin(dpt):
@@ -446,15 +464,26 @@ def diagnosis_restore_bootimg(dpt, usetmpfp=None, bootimgfp=None):
         dpt.info_print("Trying to use /root/boot.img.bak")
         return dpt.diagnosis_restore_boot(fp="/root/boot.img.bak")
     # otherwise we need to first upload our own boot img
-    remotefp = diagnosis_push_file(dpt, folder="/tmp", overwrite=True)
-    if remotefp is not None:
-        resp = input('> Confirm to continue? [yes/no]: ')
-        if resp == 'yes':
-            if dpt.diagnosis_restore_boot(fp=remotefp):
-                dpt.info_print("Success!")
-                return True
-            dpt.err_print("Failed..")
-            return False
+    # NOTE: use mass storage instead
+    dpt.diagnosis_start_mass_storage()
+    dpt.info_print("Your computer shall have mounted a disk.")
+    dpt.info_print("Please copy your `boot.img.bak` there.")
+    try:
+        input("While done, please press Enter key to continue..")
+        dpt.diagnosis_stop_mass_storage()
+    except KeyboardInterrupt:
+        dpt.err_print("Nothing happened..")
+        dpt.diagnosis_stop_mass_storage()
+        return False
+    # remotefp = diagnosis_push_file(dpt, folder="/tmp", overwrite=True)
+    # if remotefp is not None:
+    resp = input('> Confirm to continue? [yes/no]: ')
+    if resp == 'yes':
+        if dpt.diagnosis_restore_boot(fp="boot.img.bak", fromSD=True):
+            dpt.info_print("Success!")
+            return True
+        dpt.err_print("Failed..")
+        return False
     dpt.err_print("Nothing happened..")
     return False
 
