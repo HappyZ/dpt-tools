@@ -32,6 +32,9 @@
 
 # we do not care about animation
 
+# correct repacking behavior for MacOS
+export COPYFILE_DISABLE=true
+
 # params
 INDIR=$1  # input folder
 TMPDIR=$INDIR
