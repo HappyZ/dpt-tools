@@ -46,6 +46,8 @@ chmod +x unofficial_pkg_repacker_pkg.sh
 ./unofficial_pkg_repacker_pkg.sh <previous/output/folder/path>
 ```
 
+Note that `chkver.sh` and `verify.sh` will check the validity of the pkg also (via version number etc.). So only modify things if you really know what is going on. You need to remove the version check. And you need to better not touch `rawdata` (remove that line or related) if you do not know what it does. 
+
 # 0x3 Validate the package
 
 
