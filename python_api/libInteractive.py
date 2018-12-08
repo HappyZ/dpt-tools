@@ -50,6 +50,10 @@ def validate_required_files(dpt, purpose='diagnosis'):
             'python_api/assets/libsupol.so',
             'python_api/assets/install-recovery.sh'
         ]
+    elif purpose == 'eufwupdater':
+        requiredFiles = [
+            'python_api/assets/start_eufwupdater.sh'
+        ]
     else:
         requiredFiles = [
             'python_api/assets/shankerzhiwu_disableidcheck.pkg',
@@ -144,6 +148,7 @@ It behaves similarly to regular serial session with less flexibility (cannot use
 This mode intends to automate some complicated procedures.
 
 Supported commands:
+    `patch-updater-bash`-- patch the updater bash to bypass sig validation
     `push-file`         -- transfer file to DPT at 800bps (=100Bps)
     `pull-file`         -- transfer file from DPT
     `backup-bootimg`    -- backup the boot img and download it to local device
@@ -323,6 +328,25 @@ def diagnosis_push_file(
     except BaseException as e:
         dpt.err_print(str(e))
     return None
+
+
+def diagnosis_patch_eufwupdater(dpt):
+    '''
+    patch the start_eufwupdater.sh to bypass pkg check
+    '''
+    if not validate_required_files(dpt, purpose='eufwupdater'):
+        return False
+    bashfp = diagnosis_push_file(
+        dpt,
+        localfp='python_api/assets/start_eufwupdater.sh',
+        folder='/usr/local/bin',
+        overwrite=True)
+    if bashfp is None:
+        dpt.err_print("Failed to patch!!")
+        return False
+    dpt.diagnosis_set_perm(bashfp, owner='1496.1496', perm='0775')
+    dpt.info_print("Success!")
+    return True
 
 
 def diagnosis_backup_bootimg(dpt):
@@ -509,6 +533,9 @@ def diagnosis_cmd(dpt):
                 break
             elif cmd == 'help':
                 print_diagnosis_info()
+                continue
+            elif cmd =='patch-updater-bash':
+                diagnosis_patch_eufwupdater(dpt)
                 continue
             elif cmd == 'push-file':
                 diagnosis_push_file(dpt)
