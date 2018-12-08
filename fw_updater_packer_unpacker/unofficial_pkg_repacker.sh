@@ -55,7 +55,8 @@ if [[ ! -d $INDIR ]]; then
 fi
 
 echo "* zip data.."
-cd $INDIR && tar -czf repacked_pkg.tar.gz FwUpdater/ && cd ..
+CUR_DIR=$(pwd)
+cd $INDIR && tar -czf repacked_pkg.tar.gz FwUpdater/ && cd $CUR_DIR
 
 echo "* encrypt zipped tar"
 openssl enc -e -aes-256-cbc -K `cat $AESFILE` -iv `cat $IVFILE` -in $INDIR/repacked_pkg.tar.gz -out $TMPDIR/tmp.step1

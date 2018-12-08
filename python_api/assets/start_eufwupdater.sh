@@ -101,7 +101,7 @@ dd if=$1 of=$IV bs=1 skip=${IV_OFFSET} count=32 2>/dev/null
 ########################################
 # decrypt data and extract directory tree
 ########################################
-dd if=$1 bs=$(($DATA_OFFSET)) skip=1 2>/dev/null | head -c $(($BODY_SIZE)) | openssl enc -d -aes-256-cbc -K `cat ${AES256_KEY}` -iv `cat ${IV}` | tar -xz -C $2
+dd if=$1 bs=$(($DATA_OFFSET)) skip=1 2>/dev/null | head -c $(($BODY_SIZE)) | openssl enc -d -aes-256-cbc -K "cat ${AES256_KEY}" -iv "cat ${IV}" | tar -xz -C $2
 
 
 ########################################
