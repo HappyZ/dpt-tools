@@ -35,7 +35,7 @@
 # params
 INDIR=$1  # input folder
 TMPDIR=$INDIR
-PKGFILE=$1/repacked.pkg  # output pkg file
+PKGFILE=$1/FwUpdater.pkg  # output pkg file
 SHA256KEY="./key.pub"
 SIGKEY="./key.private"  # we use data encryption key (ignored anyway)
 DATAKEY_D="./key.private"
@@ -101,3 +101,7 @@ printf "%.8x" $((OFFSET_DATA)) | sed -E 's/(..)(..)(..)(..)/\4\3\2\1/' | xxd -r 
 
 echo "* add file header"
 printf "DPUP" | cat - $TMPDIR/tmp.step5 > $PKGFILE
+
+# remove tmp files
+rm $TMPDIR/tmp.step*
+rm $INDIR/repacked_pkg.tar.gz
