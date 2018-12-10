@@ -34,6 +34,7 @@ Then you can change the bash and let it run "anything" (as long as supported in 
 
 * In the bash, `exit 0` means it will reboot, while `exit 1` or any error status will shut down the system.
 * Double check your commands. Try them first in diagnosis mode.
+* Absolutely do NOT `exit 1` while your script has errors. This will create an infinite loop of "system start -> update via pkg -> shutdown -> restart -> update -> shutdown -> ...". I learned the hard way and there is no way to fix it (soft bricked).
 
 # 0x2 Re-Pack it with your own key
 
