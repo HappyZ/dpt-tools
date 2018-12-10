@@ -78,13 +78,6 @@ def disable_id_check(dpt):
             if not dpt.update_firmware(open(fp, 'rb')):
                 dpt.err_print('Failed to upload shankerzhiwu_disableidcheck pkg')
                 return False
-            try:
-                input(
-                    '>>> After your DPT reboots, shows `update failure` message, ' +
-                    'connects back to WiFi, etc., press `Enter` key to continue')
-            except BaseException as e:
-                dpt.err_print(str(e))
-                return False
             return True
         elif resp == 'yes':
             return True
@@ -125,6 +118,13 @@ def obtain_diagnosis_access(dpt):
     if not disable_id_check(dpt):
         return False
     dpt.info_print('Congrats! You are half-way through! You have disabled the OTG ID check')
+    try:
+        input(
+            '>>> After your DPT reboots, shows `update failure` message, ' +
+            'connects back to WiFi, etc., press `Enter` key to continue')
+    except BaseException as e:
+        dpt.err_print(str(e))
+        return False
     # step 2: reset root password
     if not reset_root_password(dpt):
         return False
