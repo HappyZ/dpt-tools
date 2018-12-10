@@ -95,6 +95,8 @@ After then, you can do `adb shell` and then type `su` to verify if you have obta
 
 ## fw_updater_packer_unpacker - Automation to pack/unpack pkg
 
+**Note for developers: Absolutely do NOT `exit 1` while your script (in pkg) has errors.** This will create an infinite loop of "system start -> update via pkg -> shutdown -> restart -> update -> shutdown -> ...". I learned the hard way and there is no way to fix it (soft bricked).
+
 To flash pkg with unverified signature, you need to modify the updater file at `/usr/local/bin/start_eufwupdater.sh`.
 
 Check [this README](https://github.com/HappyZ/dpt-tools/blob/master/fw_updater_packer_unpacker/README.md) for more details.
