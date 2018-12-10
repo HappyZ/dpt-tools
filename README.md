@@ -4,6 +4,8 @@
 
 We likely have some fun stuff here! 
 
+Note on 12/09/2018: In short, I soft-brick my DPT while creating my own pkg.. so I won't be able to make much progress until I fix that (likely I need to send the device to DPT support). Meanwhile, please have a great Christmas!
+
 # 0x1 Special Thanks
 
 Greatly thank
