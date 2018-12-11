@@ -58,6 +58,8 @@ python dpt-tools.py --diagnosis
 
 ### At Diagnosis Mode
 
+To ***patch updater bash***, just run `patch-updater-bash`.
+
 To ***obtain ADB access***, we need to flash a modified `boot.img` (`boot-1.4.01.16100-mod-happyz-181118.img`). 
 It is confirmed to work on RP1 version `1.4.01.16100` and on CP1 version `1.4.02.09061` (thanks to `mingming1222`).
 
@@ -192,6 +194,28 @@ mv ExtMgr.db ExtMgr.db_bak
 mv ExtMgr.db-journal ExtMgr.db-journal_bak
 ```
 6. Reboot
+
+### Guide to use Taobao PKG
+
+(they might change the method at any moment, but we do appreciate they enabled bluetooth HID!)
+
+Thanks to `sekkit` and `ziegfeld` who complete the guide:
+
+1. Make sure you have already get diagnosis mode, and ran `patch-updater-bash` already.
+2. Download latest zip from http://kdroid.club/dpt1-user/ 
+3. Go into normal mode and run `fw` and flash their pkg
+4. Reboot into diagnosis mode, apply my modified `boot.img` (to avoid their EID verification in taobao img)
+5. Then run:
+```
+mkdir /mnt/system
+mount /dev/mmcblk0p9 /mnt/system
+rm /mnt/system/app/JSONClient.apk
+mv /mnt/system/app/DigitalPaperApp/DigitalPaperApp.apk.bak3 /mnt/system/app/DigitalPaperApp/DigitalPaperApp.apk
+umount /mnt/system
+reboot &
+```
+
+Quit the tool and wait for device reboot.
 
 
 # 0xF Mission Impossible
