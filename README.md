@@ -198,6 +198,7 @@ mv ExtMgr.db-journal ExtMgr.db-journal_bak
 ### Guide to use Taobao PKG
 
 (they might change the method at any moment, but we do appreciate they enabled bluetooth HID!)
+(FYI, I personally prefer a clean system with changes I know, over using their PKGs with unknown changes.)
 
 Thanks to `sekkit` and `ziegfeld` who complete the guide:
 
@@ -205,7 +206,7 @@ Thanks to `sekkit` and `ziegfeld` who complete the guide:
 2. Download latest zip from http://kdroid.club/dpt1-user/ 
 3. Go into normal mode and run `fw` and flash their pkg
 4. Reboot into diagnosis mode, apply my modified `boot.img` (to avoid their EID verification in taobao img)
-5. Then run:
+5. Then run in diagnosis mode:
 ```
 mkdir /mnt/system
 mount /dev/mmcblk0p9 /mnt/system
