@@ -200,7 +200,7 @@ mv ExtMgr.db-journal ExtMgr.db-journal_bak
 (they might change the method at any moment, but we do appreciate they enabled bluetooth HID!)
 (FYI, I personally prefer a clean system with changes I know, over using their PKGs with unknown changes.)
 
-Thanks to `sekkit` and `ziegfeld` who complete the guide:
+Thanks to `sekkit` who provides the guide:
 
 1. Make sure you have already get diagnosis mode, and ran `patch-updater-bash` already.
 2. Download latest zip from http://kdroid.club/dpt1-user/ 
