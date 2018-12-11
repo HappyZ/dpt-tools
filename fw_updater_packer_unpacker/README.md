@@ -75,5 +75,3 @@ Then type `fw` and follow the instruction.
 # Known Issues
 
 * After reboot, it will appear errors saying update failed. But PKG is actually applied.
-
-* Not supporting animations yet.
