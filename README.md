@@ -4,12 +4,18 @@
 
 We likely have some fun stuff here! 
 
-Note on 12/09/2018: In short, I soft-brick my DPT while creating my own pkg.. so I won't be able to make much progress until I fix that (likely I need to send the device to DPT support). Meanwhile, please have a great Christmas!
+Note on 12/12/2018: (T_T sad news) I have soft-bricked my DPT and based on it's current stage it couldn't recover. Unfortunately, mine is out of warranty and I'm not paying over $400 more for a replacement (talked to S.O.N.Y. about this). I would appreciate some donations so I can afford the cost. But if not, it's okay, as we also get many talented others, and we got the Taobao PKGs. I'll also ask friends to look at bricked device from the hardware side. 
+
+Things that would greatly help new comers:
+- [ ] Flashsable PKGs without going into diagnosis mode (checkout the example (here)[https://github.com/HappyZ/dpt-tools/tree/master/fw_updater_packer_unpacker/pkg_example])
+- [ ] A clean system modification over taobao PKGs (as they have validations..)
+
+Thanks for your understanding. Keep up the active discussions in XDA and Issues section here. Meanwhile, please all have a great Christmas!
 
 # 0x1 Special Thanks
 
 Greatly thank
-* [shankerzhiwu and his/her friend at XDA](https://forum.xda-developers.com/general/help/idea-to-root-sonys-e-reader-dpt-rp1-t3654725/post78153143) who made the USB hack possible
+* [shankerzhiwu and his friend at XDA](https://forum.xda-developers.com/general/help/idea-to-root-sonys-e-reader-dpt-rp1-t3654725/post78153143) who made the USB hack possible
 * [octavianx](https://github.com/octavianx/Unpack-and-rebuild-the-DPT-RP1-upgrade-firmware) who sheds light on the hack 
 * [janten](https://github.com/janten/dpt-rp1-py) who initiates the commandline tool for web APIs
 * `silvertriclops` who points out bugs in `get-su-bin` and "forces" me to test it :D
@@ -197,26 +203,9 @@ mv ExtMgr.db-journal ExtMgr.db-journal_bak
 
 ### Guide to use Taobao PKG
 
-(they might change the method at any moment, but we do appreciate they enabled bluetooth HID!)
 (FYI, I personally prefer a clean system with changes I know, over using their PKGs with unknown changes.)
 
-Thanks to `sekkit` who provides the guide:
-
-1. Make sure you have already get diagnosis mode, and ran `patch-updater-bash` already.
-2. Download latest zip from http://kdroid.club/dpt1-user/ 
-3. Go into normal mode and run `fw` and flash their pkg
-4. Reboot into diagnosis mode, apply my modified `boot.img` (to avoid their EID verification in taobao img)
-5. Then run in diagnosis mode:
-```
-mkdir /mnt/system
-mount /dev/mmcblk0p9 /mnt/system
-rm /mnt/system/app/JSONClient.apk
-mv /mnt/system/app/DigitalPaperApp/DigitalPaperApp.apk.bak3 /mnt/system/app/DigitalPaperApp/DigitalPaperApp.apk
-umount /mnt/system
-reboot &
-```
-
-Quit the tool and wait for device reboot.
+Still an ongoing disucssions at [#24](https://github.com/HappyZ/dpt-tools/issues/24). Feel free to contribute if you have figured this out.
 
 
 # 0xF Mission Impossible
