@@ -7,7 +7,7 @@ We likely have some fun stuff here!
 Note on 12/12/2018: (T_T sad news) I have soft-bricked my DPT and based on it's current stage it couldn't recover. Unfortunately, mine is out of warranty and I'm not paying over $400 more for a replacement (talked to S.O.N.Y. about this). I would appreciate some donations so I can afford the cost. But if not, it's okay, as we also get many talented others, and we got the Taobao PKGs. I'll also ask friends to look at bricked device from the hardware side. 
 
 Things that would greatly help new comers:
-- [ ] Flashsable PKGs without going into diagnosis mode (checkout the example (here)[https://github.com/HappyZ/dpt-tools/tree/master/fw_updater_packer_unpacker/pkg_example])
+- [ ] Flashsable PKGs without going into diagnosis mode (checkout the example [here](https://github.com/HappyZ/dpt-tools/tree/master/fw_updater_packer_unpacker/pkg_example))
 - [ ] A clean system modification over taobao PKGs (as they have validations..)
 
 Thanks for your understanding. Keep up the active discussions in XDA and Issues section here. Meanwhile, please all have a great Christmas!
