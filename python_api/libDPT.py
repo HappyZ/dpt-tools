@@ -25,6 +25,8 @@ class DPT():
         8444/tcp  open     unknown
         8445/tcp  open     unknown
         '''
+        self.client_id_fp = ""
+        self.key_fp = ""
         self.debug = debug
         if addr is None:
             self.addr = "digitalpaper.local"

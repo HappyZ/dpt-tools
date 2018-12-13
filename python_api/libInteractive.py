@@ -125,6 +125,11 @@ def obtain_diagnosis_access(dpt):
     except BaseException as e:
         dpt.err_print(str(e))
         return False
+    if not dpt.authenticate(dpt.client_id_fp, dpt.key_fp):
+        dpt.err_print("Cannot reauthenticate after reboot")
+        dpt.err_print("Client id filepath: {}".format(dpt.client_id_fp))
+        dpt.err_print("Client key filepath: {}".format(dpt.key_fp))
+        return False
     # step 2: reset root password
     if not reset_root_password(dpt):
         return False
