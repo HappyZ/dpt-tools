@@ -222,6 +222,8 @@ class DPT():
         if not self.diagnosis_isfile(fp):
             self.err_print("{} does not exist".format(fp))
             return False
+        md5 = self.diagnosis_md5sum_file(fp)
+        self.info_print("{0} MD5: {1}".format(fp, md5))
         cmd = "dd if='{0}' of={1} bs=4M".format(fp, self.par_boot)
         self.info_print("Fingercrossing.. Do NOT touch the device!")
         # need to be extra careful here
@@ -244,6 +246,8 @@ class DPT():
         if not self.diagnosis_isfile(fp):
             self.err_print("{} does not exist".format(fp))
             return False
+        md5 = self.diagnosis_md5sum_file(fp)
+        self.info_print("{0} MD5: {1}".format(fp, md5))
         if isSparse:
             cmd = "extract_sparse_file '{0}' '{1}'".format(fp, self.par_system)
         else:
