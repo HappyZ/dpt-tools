@@ -485,7 +485,7 @@ def diagnosis_restore_systemimg(dpt):
     dpt.info_print("Your computer shall have mounted a disk.")
     dpt.info_print("Please copy your `system.img` there.")
     try:
-        input("While done, please press Enter key to continue..")
+        input("When done, plz eject disk and press Enter to continue..")
         dpt.diagnosis_stop_mass_storage()
     except KeyboardInterrupt:
         dpt.err_print("Nothing happened..")
@@ -525,7 +525,7 @@ def diagnosis_restore_bootimg(dpt, usetmpfp=None, bootimgfp=None):
     dpt.info_print("Your computer shall have mounted a disk.")
     dpt.info_print("Please copy your `boot.img.bak` there.")
     try:
-        input("While done, please press Enter key to continue..")
+        input("When done, plz eject disk and press Enter to continue..")
         dpt.diagnosis_stop_mass_storage()
     except KeyboardInterrupt:
         dpt.err_print("Nothing happened..")
