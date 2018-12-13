@@ -212,6 +212,9 @@ class DPT():
         return ofp
 
     def diagnosis_restore_boot(self, fp="/root/boot.img.bak", fromSD=False):
+        '''
+        restore from desired boot img backup
+        '''
         if fromSD:
             self.diagnosis_mount_sd()
             if not self.diagnosis_isfile(fp):
@@ -220,6 +223,31 @@ class DPT():
             self.err_print("{} does not exist".format(fp))
             return False
         cmd = "dd if='{0}' of={1} bs=4M".format(fp, self.par_boot)
+        self.info_print("Fingercrossing.. Do NOT touch the device!")
+        # need to be extra careful here
+        resp = self.diagnosis_write(cmd, timeout=99999)
+        self.info_print(resp)
+        if fromSD:
+            self.diagnosis_umount_sd()
+        return not (resp == "")
+
+    def diagnosis_restore_system(
+        self, fp="/root/system.img", fromSD=True, isSparse=True
+    ):
+        '''
+        restore from system.img
+        '''
+        if fromSD:
+            self.diagnosis_mount_sd()
+            if not self.diagnosis_isfile(fp):
+                fp = "{0}/{1}".format(self.sd_tmp_mpt, fp)
+        if not self.diagnosis_isfile(fp):
+            self.err_print("{} does not exist".format(fp))
+            return False
+        if isSparse:
+            cmd = "extract_sparse_file '{0}' '{1}'".format(fp, self.par_system)
+        else:
+            cmd = "dd if='{0}' of={1} bs=4M".format(fp, self.par_system)
         self.info_print("Fingercrossing.. Do NOT touch the device!")
         # need to be extra careful here
         resp = self.diagnosis_write(cmd, timeout=99999)

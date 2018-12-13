@@ -152,8 +152,9 @@ Supported commands:
     `push-file`         -- transfer file to DPT at 800bps (=100Bps)
     `pull-file`         -- transfer file from DPT
     `backup-bootimg`    -- backup the boot img and download it to local device
-    `restore-bootimg`   -- restore the boot img
-    `get-su-bin`        -- enable `su` (root) in adb (beta, not well tested)
+    `restore-bootimg`   -- restore the boot img (use `boot.img.bak`)
+    `restore-systemimg` -- restore the system img (use `system.img`)
+    `get-su-bin`        -- enable `su` (root) in adb
     `exit`/`quit`       -- leave the tool
     and many unix cmds (do not support less/head)
 """)
@@ -476,6 +477,37 @@ def diagnosis_get_su_bin(dpt):
     dpt.info_print("Done!")
 
 
+def diagnosis_restore_systemimg(dpt):
+    '''
+    restore system img
+    '''
+    dpt.diagnosis_start_mass_storage()
+    dpt.info_print("Your computer shall have mounted a disk.")
+    dpt.info_print("Please copy your `system.img` there.")
+    try:
+        input("While done, please press Enter key to continue..")
+        dpt.diagnosis_stop_mass_storage()
+    except KeyboardInterrupt:
+        dpt.err_print("Nothing happened..")
+        dpt.diagnosis_stop_mass_storage()
+        return False
+    try:
+        resp = input('> Is it a sparse image? [yes/no]: ')
+        isSparse = (resp == 'yes')
+        resp = input('> Confirm to continue? [yes/no]: ')
+    except KeyboardInterrupt:
+        dpt.err_print("Nothing happened..")
+        return False
+    if resp == 'yes':
+        if dpt.diagnosis_restore_system(fp="system.img", isSparse=isSparse):
+            dpt.info_print("Success!")
+            return True
+        dpt.err_print("Failed..")
+        return False
+    dpt.err_print("Nothing happened..")
+    return False
+
+
 def diagnosis_restore_bootimg(dpt, usetmpfp=None, bootimgfp=None):
     '''
     restore boot img
@@ -501,7 +533,11 @@ def diagnosis_restore_bootimg(dpt, usetmpfp=None, bootimgfp=None):
         return False
     # remotefp = diagnosis_push_file(dpt, folder="/tmp", overwrite=True)
     # if remotefp is not None:
-    resp = input('> Confirm to continue? [yes/no]: ')
+    try:
+        resp = input('> Confirm to continue? [yes/no]: ')
+    except KeyboardInterrupt:
+        dpt.err_print("Nothing happened..")
+        return False
     if resp == 'yes':
         if dpt.diagnosis_restore_boot(fp="boot.img.bak", fromSD=True):
             dpt.info_print("Success!")
@@ -548,6 +584,9 @@ def diagnosis_cmd(dpt):
                 continue
             elif cmd == 'restore-bootimg':
                 diagnosis_restore_bootimg(dpt)
+                continue
+            elif cmd == 'restore-systemimg':
+                diagnosis_restore_systemimg(dpt)
                 continue
             elif cmd == 'get-su-bin':
                 diagnosis_get_su_bin(dpt)
