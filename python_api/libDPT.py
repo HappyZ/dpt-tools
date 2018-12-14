@@ -104,18 +104,34 @@ class DPT():
         resp = self.diagnosis_write("rm {}".format(fp))
         return not (resp == "")
 
-    def diagnosis_md5sum_file(self, fp):
+    def diagnosis_md5sum_file(self, fp, isPartition=False):
         '''
         get md5sum of a file
         '''
         if not self.diagnosis_isfile(fp):
             return ""
-        resp = self.diagnosis_write("md5sum {}".format(fp)).splitlines()
+        if isPartition:
+            fsize = self.diagnosis_get_file_size(fp)
+            cmd = "dd if={0} bs={1} count=1 | md5sum".format(fp, fsize)
+            resp = self.diagnosis_write(cmd).splitlines()
+        else:
+            resp = self.diagnosis_write("md5sum {}".format(fp)).splitlines()
         try:
             return resp[1].split()[0]
         except BaseException as e:
             self.err_print(str(e))
         return ""
+
+    def diagnosis_get_file_size(self, fp):
+        '''
+        linux to get file size
+        '''
+        cmd = "stat -c%%s {0}".format(fp)
+        try:
+            return int(self.diagnosis_write(cmd).splitlines()[1])
+        except BaseException as e:
+            self.err_print(str(e))
+        return -1
 
     def diagnosis_isfile(self, fp):
         '''
@@ -144,7 +160,7 @@ class DPT():
         mkdir -p folder
         '''
         if self.diagnosis_isfolder(folder):
-            self.info_print("{} already exist".format(folder))
+            self.info_print("{} already exist, we are fine".format(folder))
             return True
         if not self.diagnosis_write('mkdir -p {}'.format(folder)):
             self.err_print('Failed to create folder {}'.format(folder))
