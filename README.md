@@ -73,17 +73,17 @@ It is confirmed to work on RP1 version `1.4.01.16100` and on CP1 version `1.4.02
 ### If your device is not on above versions, do NOT flash
 ### 1: Backup boot image: via `backup-bootimg`
 ###    The backup image on device is at `/root/boot.img.bak`
-###    It also automatically pulls the backup to local folder
-###    It takes about 15-20min. Carefully confirm the MD5 of the pulled file.
+###    It also mounts a disk so you can copy a backup to local folder
+###    Carefully confirm the MD5 of the pulled file.
 ###    If not correct, backup AGAIN.
 ### 2: Apply the new boot image: via `restore-bootimg`
 ###    Use `python_api/assets/boot-1.4.01.16100-mod-happyz-181118.img`
-###    It takes about 15-20min. Carefully confirm the MD5 of the pushed file.
+###    Carefully confirm the MD5 of the pushed file.
 ###    If not correct, do NOT type `yes` to restore it.
 ```
 
 
-It may appear to be `unauthorized`. Since I did not include a vulnerable `adbd`, I put a master public key in DPT at `/adb_keys`. This causes an insecure ADB due to `/adb_keys`. I will fix this in later updates.
+It may appear to be `unauthorized`. Since I did not include a vulnerable `adbd`, I put a master public key in DPT at `/adb_keys`. This causes an insecure ADB due to `/adb_keys`. TODO: remove this and add user's own keys to `/data/misc/adb/` instead.
 
 To address `unauthorized`, on your computer (Mac or Linux), 
 ```
