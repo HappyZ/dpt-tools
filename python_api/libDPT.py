@@ -598,14 +598,13 @@ class DPT():
         '''
         return self.authenticate()
 
-
     def authenticate(self, client_id_fp="", key_fp="", testmode=False):
         '''
         authenticate is necessary to send url request
         '''
         # find client_id_fp and key_fp optional
         if not client_id_fp or not key_fp:
-            client_id_fp, key_fp = auto_find_client_key_fps()
+            client_id_fp, key_fp = self.auto_find_client_key_fps()
         if not os.path.isfile(client_id_fp) or not os.path.isfile(key_fp):
             print(
                 "! Err: did not find {0} or {1}"

@@ -65,8 +65,7 @@ def main():
     '''
     main func to initalize dpt object
     '''
-    p = argparse.ArgumentParser(
-        description="DPT Tools")
+    p = argparse.ArgumentParser(description="DPT Tools")
     p.add_argument(
         '--client-id', '-id',
         dest="dpt_id",
