@@ -10,7 +10,7 @@ Things that would greatly help new comers:
 - [ ] Flashsable PKGs without going into diagnosis mode (checkout the example [here](https://github.com/HappyZ/dpt-tools/tree/master/fw_updater_packer_unpacker/pkg_example))
 - [ ] A clean system modification over taobao PKGs (as they have validations..)
 
-Thanks for your understanding. Keep up the active discussions in XDA and Issues section here. Meanwhile, please all have a great Christmas!
+Thanks for your understanding, and thank all who donated. Keep up the active discussions in XDA and Issues section here. Meanwhile, please all have a great Christmas!
 
 # 0x1 Special Thanks
 
@@ -205,7 +205,7 @@ mv ExtMgr.db-journal ExtMgr.db-journal_bak
 
 (FYI, I personally prefer a clean system with changes I know, over using their PKGs with unknown changes.)
 
-Still an ongoing disucssions at [#24](https://github.com/HappyZ/dpt-tools/issues/24). Feel free to contribute if you have figured this out.
+People have shared their system.img with the extracted apps from taobao pkg. Check [#37](https://github.com/HappyZ/dpt-tools/issues/37) out.
 
 
 # 0xF Mission Impossible
