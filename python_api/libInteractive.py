@@ -572,7 +572,7 @@ def diagnosis_mode(dpt):
     enter diagnosis mode
     '''
     dpt.info_print('Steps to enter diagnosis mode:')
-    dpt.info_print('1. Turn of DPT')
+    dpt.info_print('1. Turn off DPT')
     dpt.info_print('2. Hold HOME button')
     dpt.info_print('3. Press POWER button once. Then light blinks yellow')
     dpt.info_print('4. Release HOME button, a black square will show up')
