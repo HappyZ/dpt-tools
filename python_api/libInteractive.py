@@ -52,7 +52,8 @@ def validate_required_files(dpt, purpose='diagnosis'):
         ]
     elif purpose == 'eufwupdater':
         requiredFiles = [
-            'python_api/assets/start_eufwupdater.sh'
+            'python_api/assets/start_eufwupdater.sh',
+            'python_api/assets/updater_check.sh'
         ]
     else:
         requiredFiles = [
@@ -125,7 +126,7 @@ def obtain_diagnosis_access(dpt):
     except BaseException as e:
         dpt.err_print(str(e))
         return False
-    if not dpt.authenticate(dpt.client_id_fp, dpt.key_fp):
+    if not dpt.reauthenticate():
         dpt.err_print("Cannot reauthenticate after reboot")
         dpt.err_print("Client id filepath: {}".format(dpt.client_id_fp))
         dpt.err_print("Client key filepath: {}".format(dpt.key_fp))
@@ -342,15 +343,27 @@ def diagnosis_patch_eufwupdater(dpt):
     '''
     if not validate_required_files(dpt, purpose='eufwupdater'):
         return False
+    # patch start_eufwupdater.sh
     bashfp = diagnosis_push_file(
         dpt,
         localfp='python_api/assets/start_eufwupdater.sh',
         folder='/usr/local/bin',
         overwrite=True)
     if bashfp is None:
-        dpt.err_print("Failed to patch!!")
+        dpt.err_print("Failed to patch start_eufwupdater.sh!!")
         return False
     dpt.diagnosis_set_perm(bashfp, owner='1496.1496', perm='0775')
+    # patch updater_check.sh
+    bashfp = diagnosis_push_file(
+        dpt,
+        localfp='python_api/assets/updater_check.sh',
+        folder='/usr/local/bin',
+        overwrite=True)
+    if bashfp is None:
+        dpt.err_print("Failed to patch updater_check.sh!!")
+        return False
+    dpt.diagnosis_set_perm(bashfp, owner='1496.1496', perm='0775')
+    # success
     dpt.info_print("Success!")
     return True
 

@@ -65,8 +65,7 @@ def main():
     '''
     main func to initalize dpt object
     '''
-    p = argparse.ArgumentParser(
-        description="DPT Tools")
+    p = argparse.ArgumentParser(description="DPT Tools")
     p.add_argument(
         '--client-id', '-id',
         dest="dpt_id",
@@ -107,8 +106,6 @@ def main():
             "Make sure your id, key, and ip addresses are correct."
         )
         exit(1)
-    dpt.client_id_fp = args.get('dpt_id', "")
-    dpt.key_fp = args.get('dpt_key', "")
 
     interactive(dpt, diagnosis=args.get('diagnosis', False))
 

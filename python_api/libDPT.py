@@ -561,12 +561,72 @@ class DPT():
         return self._get_api(
             "/system/controls/pastlog", cookies=self.cookies, isfile=True)
 
-    def authenticate(self, client_id_fp, key_fp, testmode=False):
+    def get_client_key_fps(self):
+        '''
+        return the stored client key file paths
+        '''
+        return self.client_id_fp, self.key_fp
+
+    def set_client_key_fps(self, client_id_fp, key_fp):
+        '''
+        store the client key file paths
+        '''
+        self.client_id_fp = client_id_fp
+        self.key_fp = key_fp
+
+    def auto_find_client_key_fps(self):
+        '''
+        automatically find the client key file paths
+        inspired from https://github.com/janten/dpt-rp1-py/pull/52
+        '''
+        default_client_fp, default_key_fp = self.get_client_key_fps()
+        if os.path.isfile(default_client_fp) and os.path.isfile(default_key_fp):
+            return default_client_fp, default_key_fp
+        dpa_path = "."
+        # MacOS
+        try:
+            home_path = os.path.expanduser("~")
+        except BaseException:
+            return default_client_fp, default_key_fp
+        tmp_dpa_path = "{}/Library/Application Support/".format(home_path)
+        tmp_dpa_path += "Sony Corporation/Digital Paper App"
+        if os.path.isdir(tmp_dpa_path):
+            dpa_path = tmp_dpa_path
+        # windows
+        tmp_dpa_path = "{}/AppData/Roaming/".format(home_path)
+        tmp_dpa_path += "Sony Corporation/Digital Paper App"
+        if os.path.isdir(tmp_dpa_path):
+            dpa_path = tmp_dpa_path
+        # Linux
+        tmp_dpa_path = "{}/.dpapp".format(home_path)
+        if os.path.isdir(tmp_dpa_path):
+            dpa_path = tmp_dpa_path
+        tmp_client_fp = "{}/deviceid.dat".format(dpa_path)
+        tmp_key_fp = "{}/privatekey.dat".format(dpa_path)
+        if os.path.isfile(tmp_client_fp) and os.path.isfile(tmp_key_fp):
+            default_client_fp = tmp_client_fp
+            default_key_fp = tmp_key_fp
+        return default_client_fp, default_key_fp
+
+    def reauthenticate(self):
+        '''
+        reauthentication (must done after reboot)
+        '''
+        return self.authenticate()
+
+    def authenticate(self, client_id_fp="", key_fp="", testmode=False):
+        '''
+        authenticate is necessary to send url request
+        '''
+        # find client_id_fp and key_fp optional
+        if not client_id_fp or not key_fp:
+            client_id_fp, key_fp = self.auto_find_client_key_fps()
         if not os.path.isfile(client_id_fp) or not os.path.isfile(key_fp):
             print(
                 "! Err: did not find {0} or {1}"
                 .format(client_id_fp, key_fp))
             return False
+        self.set_client_key_fps(client_id_fp, key_fp)
 
         with open(client_id_fp) as f:
             client_id = f.read().strip()
