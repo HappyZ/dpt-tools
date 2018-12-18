@@ -43,11 +43,15 @@ To use the tool properly, you need:
 ### At Normal Boot Up
 
 To ***validate a successful connection***,
+```
+python dpt-tools.py -ip <ip address>
+```
+It shall automatically find the key and id based on where DPA is installed in the system.
 
+You can also specify your id and key files by:
 ```
 python dpt-tools.py -id <deviceid file path> -k <your key file path> -ip <ip address>
 ```
-
 Please refer to [janten's dpt-rp1-py](https://github.com/janten/dpt-rp1-py) on how do you get `deviceid` and `key` file path for your device.
 
 Then you will enter the interactive shell mode. Press `Ctrl + C` to exit, or type `exit` or `quit`.
@@ -64,7 +68,7 @@ python dpt-tools.py --diagnosis
 
 ### At Diagnosis Mode
 
-To ***patch updater bash***, just run `patch-updater-bash`.
+To ***patch updater bash***, just run `patch-updater-bash` (a necessity to prevent permanent brick).
 
 To ***obtain ADB access***, we need to flash a modified `boot.img` (`boot-1.4.01.16100-mod-happyz-181118.img`). 
 It is confirmed to work on RP1 version `1.4.01.16100` and on CP1 version `1.4.02.09061` (thanks to `mingming1222`).
