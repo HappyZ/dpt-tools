@@ -16,6 +16,28 @@ Comment out the key verification in file `/usr/local/bin/start_eufwupdater.sh`: 
 # fi
 ```
 
+Also, suggest to comment out the `/usr/local/bin/updater_check.sh` to prevent permanent brick:
+```
+  if [ $ret -eq 0 ]
+  then
+    # remove pkg, change normal boot and reboot
+    change_boot_mode.sh normal
+    rm -rf ${END_USER_UPDATER_PKG}
+    local_reboot 1
+  # elif [ $ret -eq 1 ]
+  # then
+  #   # remain pkg, keep boot mode and shutdown
+  #   local_reboot 0
+  else
+    # remove pkg, change normal boot and shutdown
+    change_boot_mode.sh normal
+    rm -rf ${END_USER_UPDATER_PKG}
+    local_reboot 0
+  fi
+```
+
+An easier way is to run `patch-updater-bash` in `dpt-tools.py --diagnosis` in diagnosis mode.
+
 # 0x1 Create your own PKG package
 
 ## Use Official PKGs as Examples
@@ -75,3 +97,7 @@ Then type `fw` and follow the instruction.
 # Known Issues
 
 * After reboot, it will appear errors saying update failed. But PKG is actually applied.
+
+# Examples
+
+Check out [these examples](https://github.com/HappyZ/dpt-tools/tree/master/fw_updater_packer_unpacker/pkg_example/)
