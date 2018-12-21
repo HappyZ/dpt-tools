@@ -70,7 +70,7 @@ python dpt-tools.py --diagnosis
 
 To ***patch updater bash***, just run `patch-updater-bash` (a necessity to prevent permanent brick).
 
-To ***obtain ADB access***, we need to flash a modified `boot.img` (`boot-1.4.01.16100-mod-happyz-181118.img`). 
+To ***obtain ADB access***, we need to flash a modified `boot.img` (`boot-1.4.01.16100-mod-happyz-181214.img`). 
 It is confirmed to work on RP1 version `1.4.01.16100` and on CP1 version `1.4.02.09061` (thanks to `mingming1222`).
 
 ```
@@ -81,7 +81,7 @@ It is confirmed to work on RP1 version `1.4.01.16100` and on CP1 version `1.4.02
 ###    Carefully confirm the MD5 of the pulled file.
 ###    If not correct, backup AGAIN.
 ### 2: Apply the new boot image: via `restore-bootimg`
-###    Use `python_api/assets/boot-1.4.01.16100-mod-happyz-181118.img`
+###    Use `python_api/assets/boot-1.4.01.16100-mod-happyz-181214.img`
 ###    Carefully confirm the MD5 of the pushed file.
 ###    If not correct, do NOT type `yes` to restore it.
 ```
