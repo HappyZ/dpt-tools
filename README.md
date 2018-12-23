@@ -70,6 +70,10 @@ python dpt-tools.py --diagnosis
 
 To ***patch updater bash***, just run `patch-updater-bash` (a necessity to prevent permanent brick).
 
+Once above is done, theoretically you can flash any pkg so you shall never need to get back to diagnosis mode - when proper pkg is provided. For example, you can flash [this one](https://github.com/HappyZ/dpt-tools/blob/master/fw_updater_packer_unpacker/pkg_example/flashable_mod_boot_img/FwUpdater.pkg) in the normal boot up to `obtain ADB access`.
+
+I encourage developers to follow [examples](https://github.com/HappyZ/dpt-tools/tree/master/fw_updater_packer_unpacker/pkg_example) here and create more flashable PKGs.
+
 To ***obtain ADB access***, we need to flash a modified `boot.img` (`boot-1.4.01.16100-mod-happyz-181214.img`). 
 It is confirmed to work on RP1 version `1.4.01.16100` and on CP1 version `1.4.02.09061` (thanks to `mingming1222`).
 
