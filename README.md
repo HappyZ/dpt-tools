@@ -58,7 +58,7 @@ Then you will enter the interactive shell mode. Press `Ctrl + C` to exit, or typ
 
 To ***update firmware from pkg file***, type `fw` and follow the instructions.
 
-To ***obtain diagnosis access***, type `root` and follow the instructions. 
+To ***obtain diagnosis access***, type `root` and follow the instructions. Make sure do this only once. After each PKG flashed, do NOT redo it (check #44).
 
 To ***enter diagnosis mode***, type `diagnosis` and follow the instructions. Or directly use:
 
