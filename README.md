@@ -70,6 +70,8 @@ python dpt-tools.py --diagnosis
 
 To ***patch updater bash***, just run `patch-updater-bash` (a necessity to prevent permanent brick).
 
+NOTE: If this step fails, do NOT power off your device. If you did power off/reboot, you will have a permanent brick. Stay inside diag mode, and manually correct the failed file(s) in `/usr/local/bin/` (using bash files in `assets` as an example, and make sure the permission of `updater_check.sh` and `start_eufwupdater.sh` are `755` and the ownership is `1496.1496`). 
+
 Once above is done, theoretically you can flash any pkg so you shall never need to get back to diagnosis mode - when proper pkg is provided. For example, you can flash [this one](https://github.com/HappyZ/dpt-tools/blob/master/fw_updater_packer_unpacker/pkg_example/flashable_mod_boot_img/FwUpdater.pkg) in the normal boot up to `obtain ADB access`.
 
 I encourage developers to follow [examples](https://github.com/HappyZ/dpt-tools/tree/master/fw_updater_packer_unpacker/pkg_example) here and create more flashable PKGs.
