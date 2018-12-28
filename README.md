@@ -58,7 +58,7 @@ Then you will enter the interactive shell mode. Press `Ctrl + C` to exit, or typ
 
 To ***update firmware from pkg file***, type `fw` and follow the instructions.
 
-To ***obtain diagnosis access***, type `root` and follow the instructions. Make sure do this only once. After each PKG flashed, do NOT redo it (check [#44](https://github.com/HappyZ/dpt-tools/issues/44)).
+To ***obtain diagnosis access***, type `root` and follow the instructions. Make sure **do this only ONCE** after success, and absolutely do NOT run this after you patched the updater script.
 
 To ***enter diagnosis mode***, type `diagnosis` and follow the instructions. Or directly use:
 
@@ -71,6 +71,8 @@ python dpt-tools.py --diagnosis
 To ***patch updater bash***, just run `patch-updater-bash` (a necessity to prevent permanent brick).
 
 NOTE: If this step fails, do NOT power off your device. If you did power off/reboot, you will have a permanent brick. Stay inside diag mode, and manually correct the failed file(s) in `/usr/local/bin/` (using bash files in `assets` as an example, and make sure the permission of `updater_check.sh` and `start_eufwupdater.sh` are `755` and the ownership is `1496.1496`). 
+
+NOTE2: After you patched the script, do NOT redo `root` to obtain diagnosis access. 
 
 Once above is done, theoretically you can flash any pkg so you shall never need to get back to diagnosis mode - when proper pkg is provided. For example, you can flash [this one](https://github.com/HappyZ/dpt-tools/blob/master/fw_updater_packer_unpacker/pkg_example/flashable_mod_boot_img/FwUpdater.pkg) in the normal boot up to `obtain ADB access`.
 
