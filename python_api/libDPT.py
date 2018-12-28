@@ -202,6 +202,7 @@ class DPT():
         # mount sd partition
         resp = self.diagnosis_write(
             "mount {0} {1}".format(self.par_sd, self.sd_tmp_mpt))
+        self.dbg_print(resp)
         return not (resp == "")
 
     def diagnosis_umount_sd(self):
@@ -209,6 +210,7 @@ class DPT():
         umount mass storage from self.sd_tmp_mpt
         '''
         resp = self.diagnosis_write("umount {}".format(self.sd_tmp_mpt))
+        self.dbg_print(resp)
         return not (resp == "")
 
     def diagnosis_backup_boot(self, ofp="/root/boot.img.bak", toSD=False):
@@ -290,7 +292,9 @@ class DPT():
         '''
         run mass_storage
         '''
-        resp = self.diagnosis_write('killall mass_storage')
+        resp = self.diagnosis_write('busybox killall mass_storage')
+        self.dbg_print(resp)
+        resp = self.diagnosis_write('/usr/local/bin/mass_storage --off')
         self.dbg_print(resp)
         return not (resp == "")
 
