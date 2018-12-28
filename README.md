@@ -8,7 +8,7 @@ Note on 12/12/2018: (T_T sad news) I have soft-bricked my DPT and based on it's 
 
 Things that would greatly help new comers:
 - [ ] Flashsable PKGs without going into diagnosis mode (checkout the example [here](https://github.com/HappyZ/dpt-tools/tree/master/fw_updater_packer_unpacker/pkg_example))
-- [ ] A clean system modification over taobao PKGs (as they have validations..)
+- [ ] A clean system modification over taobao PKGs (as they have validations.. check [#37](https://github.com/HappyZ/dpt-tools/issues/37))
 
 Thanks for your understanding, and thank all who donated. Keep up the active discussions in XDA and Issues section here. Meanwhile, please all have a great Christmas!
 
@@ -39,6 +39,8 @@ To use the tool properly, you need:
   * `pip install httpsig pyserial`
 * MacOS/Linux with support of `xxd` command (will remove this requirement soon)
   * Windows may use MinGW, some find it working, but it has not been fully tested
+  
+Please carefully review the following, and understand the procedure, and then proceed.
 
 ### At Normal Boot Up
 
@@ -130,7 +132,7 @@ Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we ca
 - [x] Allowing self-signed pkg (fw package) to flash
 - [x] System language
 - [x] Launcher modification (commandline figured)
-- [ ] Third-party app font size issue fix
+- [ ] Truly prevent permanent brick (reroute HOME + Power key to only get into diagnosis mode withou flashing pkg, even if it exists, and add an interactive button on display to do the upgrade at will)
 
 ### Methods
 - [ ] Web interface hack
