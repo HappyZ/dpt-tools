@@ -2,20 +2,16 @@
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zhuyanzi@gmail.com&item_name=A+Cup+Of+Coffee&item_number=Thank+You&currency_code=USD)
 
-We likely have some fun stuff here! 
+In the new year, I'll focus on ways to avoid a permanent brick, and making flashable PKGs to ease every installs and mods. 
 
-Note on 12/12/2018: (T_T sad news) I have soft-bricked my DPT and based on it's current stage it couldn't recover. Unfortunately, mine is out of warranty and I'm not paying over $400 more for a replacement (talked to S.O.N.Y. about this). I would appreciate some donations so I can afford the cost. But if not, it's okay, as we also get many talented others, and we got the Taobao PKGs. I'll also ask friends to look at bricked device from the hardware side. 
+Greatly thank all who donated. Thanks for being supportive to all and we are a great community. Happy new year!
 
-Things that would greatly help new comers:
-- [ ] Flashsable PKGs without going into diagnosis mode (checkout the example [here](https://github.com/HappyZ/dpt-tools/tree/master/fw_updater_packer_unpacker/pkg_example))
-- [ ] A clean system modification over taobao PKGs (as they have validations.. check [#37](https://github.com/HappyZ/dpt-tools/issues/37))
-
-Thanks for your understanding, and thank all who donated. Keep up the active discussions in XDA and Issues section here. Meanwhile, please all have a great Christmas!
+Note on 12/28/2018: :D great news! My DPT is alive (not in my hand yet)! I'll be much more careful in the new year.
 
 # 0x1 Special Thanks
 
 Greatly thank
-* [shankerzhiwu and his friend at XDA](https://forum.xda-developers.com/general/help/idea-to-root-sonys-e-reader-dpt-rp1-t3654725/post78153143) who made the USB hack possible
+* [shankerzhiwu and his friend at XDA](https://forum.xda-developers.com/general/help/idea-to-root-sonys-e-reader-dpt-rp1-t3654725/post78153143) who made the USB hack possible, and fixed my bricked DPT (not so easy)
 * [octavianx](https://github.com/octavianx/Unpack-and-rebuild-the-DPT-RP1-upgrade-firmware) who sheds light on the hack 
 * [janten](https://github.com/janten/dpt-rp1-py) who initiates the commandline tool for web APIs
 * `silvertriclops` who points out bugs in `get-su-bin` and "forces" me to test it :D
@@ -28,7 +24,7 @@ Greatly thank
 
 ## dpt-tools.py - Automation to gain root, adb, and sudo access
 
-**Heads up!** Use at your own risk. It has only been fully tested on Macbook Pro.
+**Heads up!** Use this at your own risk. It has only been fully tested on Macbook Pro.
 
 This is an interative shell commandline tool that wraps processes like updating firmware pkg, obtaining diagnosis access, etc.
 
@@ -70,9 +66,9 @@ python dpt-tools.py --diagnosis
 
 ### At Diagnosis Mode
 
-To ***patch updater bash***, just run `patch-updater-bash` (a necessity to prevent permanent brick).
+To ***patch updater bash***, just run `patch-updater-bash` (a necessity to prevent permanent brick, partially).
 
-NOTE: If this step fails, do NOT power off your device. If you did power off/reboot, you will have a permanent brick. Stay inside diag mode, and manually correct the failed file(s) in `/usr/local/bin/` (using bash files in `assets` as an example, and make sure the permission of `updater_check.sh` and `start_eufwupdater.sh` are `755` and the ownership is `1496.1496`). 
+NOTE: If this step fails, do NOT power off your device. If you did power off/reboot, you may have a permanent brick. Stay inside diag mode, and manually correct the failed file(s) in `/usr/local/bin/` (using bash files in `assets` as an example, and make sure the permission of `updater_check.sh` and `start_eufwupdater.sh` are `755` and the ownership is `1496.1496`). 
 
 NOTE2: After you patched the script, do NOT redo `root` to obtain diagnosis access. 
 
@@ -132,7 +128,7 @@ Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we ca
 - [x] Allowing self-signed pkg (fw package) to flash
 - [x] System language
 - [x] Launcher modification (commandline figured)
-- [ ] Truly prevent permanent brick (reroute HOME + Power key to only get into diagnosis mode withou flashing pkg, even if it exists, and add an interactive button on display to do the upgrade at will)
+- [ ] Truly prevent permanent brick (idea: reroute HOME + Power key to only get into diagnosis mode withou flashing pkg, even if it exists, and add an interactive button on display to do the upgrade at will)
 
 ### Methods
 - [ ] Web interface hack
