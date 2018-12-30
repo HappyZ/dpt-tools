@@ -1,6 +1,6 @@
 # 0x0 Welcome
 
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zhuyanzi@gmail.com&item_name=A+Cup+Of+Coffee&item_number=Thank+You&currency_code=USD)
+Donate via [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zhuyanzi@gmail.com&item_name=A+Cup+Of+Coffee&item_number=Thank+You&currency_code=USD), or if you can, please simply go to [my blog post here](https://blog.happyz.me/2018/dpt-rp1-can-now-gain-root-access/) and *click* the Google advertisement for me to get a sip of coffee.
 
 In the new year, I'll focus on ways to avoid a permanent brick, and making flashable PKGs to ease every installs and mods. 
 
