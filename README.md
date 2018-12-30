@@ -38,9 +38,9 @@ Check [this README](https://github.com/HappyZ/dpt-tools/blob/master/fw_updater_p
 
 # 0x4 Tutorials
 
-Most people would be interested in (the Rooting Guide)[https://github.com/HappyZ/dpt-tools/wiki/The-Ultimate-Rooting-Guide].
+Most people would be interested in [the Rooting Guide](https://github.com/HappyZ/dpt-tools/wiki/The-Ultimate-Rooting-Guide).
 
-Details in (wiki)[https://github.com/HappyZ/dpt-tools/wiki].
+Details in [wiki](https://github.com/HappyZ/dpt-tools/wiki).
 
 Note: if Launcher crashed, try in ADB sudo:
 ```
