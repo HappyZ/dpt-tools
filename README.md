@@ -20,96 +20,13 @@ Greatly thank
 
 [cough cough] If you don't know what's DPT you won't need this.
 
-# 0x3 Tools
+# 0x3 Tools Intro
 
 ## dpt-tools.py - Automation to gain root, adb, and sudo access
 
 **Heads up!** Use this at your own risk. It has only been fully tested on Macbook Pro.
 
 This is an interative shell commandline tool that wraps processes like updating firmware pkg, obtaining diagnosis access, etc.
-
-### Prerequirement
-
-To use the tool properly, you need:
-* Python 3.x
-  * `pip install httpsig pyserial`
-* MacOS/Linux with support of `xxd` command (will remove this requirement soon)
-  * Windows may use MinGW, some find it working, but it has not been fully tested
-  
-Please carefully review the following, and understand the procedure, and then proceed.
-
-### At Normal Boot Up
-
-To ***validate a successful connection***,
-```
-python dpt-tools.py -ip <ip address>
-```
-It shall automatically find the key and id based on where DPA is installed in the system.
-
-You can also specify your id and key files by:
-```
-python dpt-tools.py -id <deviceid file path> -k <your key file path> -ip <ip address>
-```
-Please refer to [janten's dpt-rp1-py](https://github.com/janten/dpt-rp1-py) on how do you get `deviceid` and `key` file path for your device.
-
-Then you will enter the interactive shell mode. Press `Ctrl + C` to exit, or type `exit` or `quit`.
-
-To ***update firmware from pkg file***, type `fw` and follow the instructions.
-
-To ***obtain diagnosis access***, type `root` and follow the instructions. Make sure **do this only ONCE** after success, and absolutely do NOT run this after you patched the updater script.
-
-To ***enter diagnosis mode***, type `diagnosis` and follow the instructions. Or directly use:
-
-```
-python dpt-tools.py --diagnosis
-```
-
-### At Diagnosis Mode
-
-To ***patch updater bash***, just run `patch-updater-bash` (a necessity to prevent permanent brick, partially).
-
-NOTE: If this step fails, do NOT power off your device. If you did power off/reboot, you may have a permanent brick. Stay inside diag mode, and manually correct the failed file(s) in `/usr/local/bin/` (using bash files in `assets` as an example, and make sure the permission of `updater_check.sh` and `start_eufwupdater.sh` are `755` and the ownership is `1496.1496`). 
-
-NOTE2: After you patched the script, do NOT redo `root` to obtain diagnosis access. 
-
-Once above is done, theoretically you can flash any pkg so you shall never need to get back to diagnosis mode - when proper pkg is provided. For example, you can flash [this one](https://github.com/HappyZ/dpt-tools/blob/master/fw_updater_packer_unpacker/pkg_example/flashable_mod_boot_img/FwUpdater.pkg) in the normal boot up to `obtain ADB access`.
-
-I encourage developers to follow [examples](https://github.com/HappyZ/dpt-tools/tree/master/fw_updater_packer_unpacker/pkg_example) here and create more flashable PKGs.
-
-To ***obtain ADB access***, we need to flash a modified `boot.img` (`boot-1.4.01.16100-mod-happyz-181214.img`). 
-It is confirmed to work on RP1 version `1.4.01.16100` and on CP1 version `1.4.02.09061` (thanks to `mingming1222`).
-
-```
-### If your device is not on above versions, do NOT flash
-### 1: Backup boot image: via `backup-bootimg`
-###    The backup image on device is at `/root/boot.img.bak`
-###    It also mounts a disk so you can copy a backup to local folder
-###    Carefully confirm the MD5 of the pulled file.
-###    If not correct, backup AGAIN.
-### 2: Apply the new boot image: via `restore-bootimg`
-###    Use `python_api/assets/boot-1.4.01.16100-mod-happyz-181214.img`
-###    Carefully confirm the MD5 of the pushed file.
-###    If not correct, do NOT type `yes` to restore it.
-```
-
-
-It may appear to be `unauthorized`. Since I did not include a vulnerable `adbd`, I put a master public key in DPT at `/adb_keys`. This causes an insecure ADB due to `/adb_keys`. TODO: remove this and add user's own keys to `/data/misc/adb/` instead.
-
-To address `unauthorized`, on your computer (Mac or Linux), 
-```
-mv ~/.android/adbkey ~/.android/adbkey_bak
-cp python_api/assets/adbkey ~/.android/adbkey
-adb kill-server
-adb devices
-```
-
-To ***obtain shell sudo access***, type `get-su-bin` and follow the instructions.
-
-Finally, type `reboot &` and close the tool by pressing `Ctrl +C` or type `exit` or `quit`. 
-
-If everything goes right, it will boot up. And you can run `adb devices` on your computer to see if your DPT appears.
-
-After then, you can do `adb shell` and then type `su` to verify if you have obtained the sudo access. You can now use `adb install` to install any packages. However, it does appear that all third party apps have super small font. 
 
 ## fw_updater_packer_unpacker - Automation to pack/unpack pkg
 
@@ -119,104 +36,18 @@ To flash pkg with unverified signature, you need to modify the updater file at `
 
 Check [this README](https://github.com/HappyZ/dpt-tools/blob/master/fw_updater_packer_unpacker/README.md) for more details.
 
-## To-Do List
+# 0x4 Tutorials
 
-### Development Roadmap
+Most people would be interested in (the Rooting Guide)[https://github.com/HappyZ/dpt-tools/wiki/The-Ultimate-Rooting-Guide].
 
-Now we can enter diagnosis mode thanks to shankerzhiwu and his/her friend, we can explore more things! The things I am interested in:
-- [x] Enabling ADB in normal Android mode
-- [x] Allowing self-signed pkg (fw package) to flash
-- [x] System language
-- [x] Launcher modification (commandline figured)
-- [ ] Truly prevent permanent brick (idea: reroute HOME + Power key to only get into diagnosis mode withou flashing pkg, even if it exists, and add an interactive button on display to do the upgrade at will)
+Details in (wiki)[https://github.com/HappyZ/dpt-tools/wiki].
 
-### Methods
-- [ ] Web interface hack
-- [X] USB interface hack ([shankerzhiwu and his/her friend at XDA](https://forum.xda-developers.com/general/help/idea-to-root-sonys-e-reader-dpt-rp1-t3654725/post78153143) did this! Great work!)
-- [ ] ~~Build update package and flash~~ (fails as we cannot bypass pkg validation)
-- [ ] ~~Web interface testmode~~ (fails as we do not have `auth nonce` and required private key `K_PRIV_DT`)
-- [ ] ~~Official app~~ (fails as the firmware updates purely rely on web interface API)
-
-# 0x4 Other tips
-
-### Open settings via commandline
-
-```
-adb shell am start -a android.settings.SETTINGS
-```
-
-### Switch language
-
-Only three are supported: Chinese, English, and Japanese
-
-```
-adb shell am start -a android.settings.LOCALE_SETTINGS
-```
-
-### Switch input method
-
-```
-adb shell am start -a android.settings.INPUT_METHOD_SETTINGS
-```
-
-If you saw error dialog `Unfortunately, the iWnn IME keyboard has stopped`, this is (potentially) due to the language switch that enables an extra input method. Just go in the `Keyboard & input methods` and only enable `iWnnkbd IME`.
-
-### Launcher app
-
-DPT Launcher is funny. It uses `ExtensionManagerService` that scans through `/etc/dp_extensions`. Ideally we shall have an automated tool to add/remove icons (not a plan), but for now, a commandline approach is the following:
-
-Re-mount your system to be writable (requiring sudo), and then use `NoteCreator` as a template:
-
-```
-> adb shell
-$ su
-# mount -o rw,remount /system
-# cd /etc/dp_extensions
-# cp -R NoteCreator MyTemplate
-# cd MyTemplate
-```
-
-Then we need to change the filenames:
-```
-mv NoteCreator_extension.xml MyTemplate_extension.xml
-mv NoteCreator_strings-en.xml MyTemplate_strings-en.xml
-mv NoteCreator_strings-ja.xml MyTemplate_strings-ja.xml
-mv NoteCreator_strings-zh_CN.xml MyTemplate_strings-zh_CN.xml
-mv ic_homemenu_createnote.png ic_homemenu_mytemplate.png
-```
-
-Finally, we need to edit each file (use `busybox vi file/path/filename`):
-1. For MyTemplate_extension.xml (`****` is the Android app intent name, e.g., `com.android.browser/.BrowserActivity`):
-```
-<?xml version="1.0" encoding="utf-8"?>
-
-<Application name="MyTemplate" type="System" version="1">
-    <LauncherEntry name="MyTemplate" category="Launcher" uri="intent:#Intent;launchFlags=0x10000000;component=****;end" string="STR_ICONMENU_9999" icon="ic_homemenu_mytemplate.png" order="999"/>
-</Application>
-```
-2. For each `****_strings-****.xml`:
-```
-<?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <string name="STR_ICONMENU_9999">MyTemplate</string>
-</resources>
-```
-3. You can upload a different png for icon `ic_homemenu_mytemplate.png` (must be 220x120 size)
-4. Make sure the files under `MyTemplate` are all permission `0644` (`ls -la /etc/dp_extensions/MyTemplate/*` and `chmod 0644 /etc/dp_extensions/MyTemplate/*`).
-5. Remove the database (cache) from the Extension Manager and allow it to rebuid the database:
+Note: if Launcher crashed, try in ADB sudo:
 ```
 cd /data/system
 mv ExtMgr.db ExtMgr.db_bak
 mv ExtMgr.db-journal ExtMgr.db-journal_bak
 ```
-6. Reboot
-
-### Guide to use Taobao PKG
-
-(FYI, I personally prefer a clean system with changes I know, over using their PKGs with unknown changes.)
-
-People have shared their system.img with the extracted apps from taobao pkg. Check [#37](https://github.com/HappyZ/dpt-tools/issues/37) out.
-
 
 # 0xF Mission Impossible
 
