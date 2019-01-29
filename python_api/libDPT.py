@@ -39,8 +39,8 @@ class DPT():
         self.serial = None
         self.serialReadTimeout = 1  # default read timeout is 1sec
         # misc
-        self.sd_tmp_mpt = "/mnt/sdtmp"
-        self.sys_tmp_mpt = "/mnt/Lucifer"
+        self.sd_tmp_mpt = "/tmp/sdtmp"
+        self.sys_tmp_mpt = "/tmp/Lucifer"
         self.par_boot = "/dev/mmcblk0p8"
         self.par_system = "/dev/mmcblk0p9"
         self.par_sd = "/dev/mmcblk0p16"
