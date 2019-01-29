@@ -244,6 +244,7 @@ class DPT():
         if fromSD:
             if not self.diagnosis_mount_sd():
                 self.err_print("Failed to mount mass storage at {}".format(self.sd_tmp_mpt))
+                self.diagnosis_umount_sd()
                 return False
             if not self.diagnosis_isfile(fp):
                 fp = "{0}/{1}".format(self.sd_tmp_mpt, fp)
@@ -270,6 +271,7 @@ class DPT():
         if fromSD:
             if not self.diagnosis_mount_sd():
                 self.err_print("Failed to mount mass storage at {}".format(self.sd_tmp_mpt))
+                self.diagnosis_umount_sd()
                 return False
             if not self.diagnosis_isfile(fp):
                 fp = "{0}/{1}".format(self.sd_tmp_mpt, fp)
