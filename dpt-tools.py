@@ -43,10 +43,15 @@ def interactive(dpt, diagnosis=False):
             cmd = cmd.lower()  # convert to lower case
         except KeyboardInterrupt:
             print()
+            dpt.info_print("Press Ctrl + D to exit")
+            continue
+        except EOFError:
+            print()
             dpt.info_print("Exiting... Thanks for using...")
             break
         except BaseException as e:
             print()
+            cmd = ''
             dpt.err_print(str(e))
         if cmd == 'root':
             obtain_diagnosis_access(dpt)

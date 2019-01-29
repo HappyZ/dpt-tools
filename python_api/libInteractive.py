@@ -617,7 +617,8 @@ def diagnosis_cmd(dpt):
             for line in resp:
                 print(line)
         except KeyboardInterrupt:
-            break
+            dpt.info_print("\nPress Ctrl + D to exit")
+            continue
         except EOFError:
             break
         except BaseException as e:
