@@ -203,6 +203,9 @@ class DPT():
         resp = self.diagnosis_write(
             "mount {0} {1}".format(self.par_sd, self.sd_tmp_mpt))
         self.dbg_print(resp)
+        if len(resp) > 1 and "Device or resource busy" in resp[1]:
+            self.err_print(resp[1])
+            return False
         return not (resp == "")
 
     def diagnosis_umount_sd(self):
@@ -225,7 +228,10 @@ class DPT():
             self.err_print('Failed to dump boot.img.bak!')
             return ""
         if toSD:
-            self.diagnosis_mount_sd()
+            if not self.diagnosis_mount_sd():
+                self.err_print('Failed to copy `boot.img.bak` to mass storage!')
+                self.diagnosis_umount_sd()
+                return ""
             self.diagnosis_write("cp {0} {1}/".format(ofp, self.sd_tmp_mpt))
             self.diagnosis_umount_sd()
             self.info_print("Copied {} to mass storage".format(ofp))
@@ -236,7 +242,9 @@ class DPT():
         restore from desired boot img backup
         '''
         if fromSD:
-            self.diagnosis_mount_sd()
+            if not self.diagnosis_mount_sd():
+                self.err_print("Failed to mount mass storage at {}".format(self.sd_tmp_mpt))
+                return False
             if not self.diagnosis_isfile(fp):
                 fp = "{0}/{1}".format(self.sd_tmp_mpt, fp)
         if not self.diagnosis_isfile(fp):
@@ -260,7 +268,9 @@ class DPT():
         restore from system.img
         '''
         if fromSD:
-            self.diagnosis_mount_sd()
+            if not self.diagnosis_mount_sd():
+                self.err_print("Failed to mount mass storage at {}".format(self.sd_tmp_mpt))
+                return False
             if not self.diagnosis_isfile(fp):
                 fp = "{0}/{1}".format(self.sd_tmp_mpt, fp)
         if not self.diagnosis_isfile(fp):
