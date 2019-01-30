@@ -64,6 +64,12 @@ def interactive(dpt, diagnosis=False):
             print_info()
         elif cmd == 'diagnosis':
             diagnosis_mode(dpt)
+        # reauthenticate after every command
+        if not dpt.reauthenticate():
+            dpt.err_print("Cannot reauthenticate, did you reboot into normal mode?")
+            dpt.err_print("Client id filepath: {}".format(dpt.client_id_fp))
+            dpt.err_print("Client key filepath: {}".format(dpt.key_fp))
+            break
 
 
 def main():
