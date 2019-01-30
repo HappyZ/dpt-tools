@@ -3,7 +3,7 @@
 
 DDAT_MOUNT_PATH=/tmp/ddat
 END_USER_UPDATER_PKG=${DDAT_MOUNT_PATH}/FwUpdater.pkg
-
+HOME_DETECTION_TMPF=/tmp/homeKeyDeect.log
 
 
 
@@ -28,12 +28,41 @@ local_reboot()
 }
 
 
+#########################
+# mount tmp file system
+#########################
+mount -t tmpfs tmpfs /tmp
+
+#########################
+# Home Button check
+#########################
+
+# animation hint
+epd_fb_test gray DU PART 0 && \
+epd_fb_test gray GC16 PART 10 0 50 50 150 50 && \
+sleep 1 && \
+epd_fb_test gray GC16 PART 10 0 50 150 150 50 && \
+sleep 1 && \
+epd_fb_test gray GC16 PART 10 0 50 250 150 50 && \
+sleep 1 &
+
+# keyscan check
+busybox script -c "timeout -t 3 keyscan" -f -q ${HOME_DETECTION_TMPF}
+grep -Fq "HOME" ${HOME_DETECTION_TMPF}
+if [ $? -eq 0 ]
+then
+  rm ${HOME_DETECTION_TMPF}
+  epd_fb_test gray GC16 PART 10 0 50 50 150 250
+  initctl start diag
+  exit 0
+else
+  rm ${HOME_DETECTION_TMPF}
+fi
 
 #########################
 # End User Updater check
 #########################
 
-mount -t tmpfs tmpfs /tmp
 mkdir ${DDAT_MOUNT_PATH}
 mount /dev/mmcblk0p16 ${DDAT_MOUNT_PATH}
 if [ -f ${END_USER_UPDATER_PKG} ]
