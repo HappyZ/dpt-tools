@@ -3,7 +3,7 @@
 
 DDAT_MOUNT_PATH=/tmp/ddat
 END_USER_UPDATER_PKG=${DDAT_MOUNT_PATH}/FwUpdater.pkg
-HOME_DETECTION_TMPF=/tmp/homeKeyDeect.log
+KEY_DETECTION_TMPF=/tmp/keyDetect.log
 
 
 
@@ -34,7 +34,7 @@ local_reboot()
 mount -t tmpfs tmpfs /tmp
 
 #########################
-# Home Button check
+# Button check
 #########################
 
 # animation hint
@@ -46,18 +46,32 @@ sleep 1 && \
 epd_fb_test gray GC16 PART 10 0 50 250 150 50 && \
 sleep 1 &
 
-# keyscan check
-busybox script -c "timeout -t 3 keyscan" -f -q ${HOME_DETECTION_TMPF}
-grep -Fq "HOME" ${HOME_DETECTION_TMPF}
+# if HOME pressed, go into diagnosis mode directly
+busybox script -c "timeout -t 3 keyscan" -f -q ${KEY_DETECTION_TMPF}
+grep -Fq "HOME" ${KEY_DETECTION_TMPF}
 if [ $? -eq 0 ]
 then
-  rm ${HOME_DETECTION_TMPF}
+  rm ${KEY_DETECTION_TMPF}
   epd_fb_test gray GC16 PART 10 0 50 50 150 250
   initctl start diag
   exit 0
-else
-  rm ${HOME_DETECTION_TMPF}
 fi
+
+# if POWER pressed, cancel and remove update
+grep -Fq "POWER" ${KEY_DETECTION_TMPF}
+if [ $? -eq 0 ]
+then
+  rm ${KEY_DETECTION_TMPF}
+  mkdir ${DDAT_MOUNT_PATH}
+  mount /dev/mmcblk0p16 ${DDAT_MOUNT_PATH}
+  change_boot_mode.sh normal
+  rm -rf ${END_USER_UPDATER_PKG}
+  local_reboot 1
+  umount ${DDAT_MOUNT_PATH}
+fi
+
+rm ${KEY_DETECTION_TMPF}
+
 
 #########################
 # End User Updater check
