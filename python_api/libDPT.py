@@ -327,16 +327,26 @@ class DPT():
             self.serial.timeout = timeout
             tmpresp = b''
             while not '@FPX-' in resp:
-                tmpresp = self.serial.read_until(b'# ')
-                resp += tmpresp.decode("utf-8").replace("\r\r\n", '')
+                tmpresp = self.serial.read()
+                resp += tmpresp.decode("utf-8")
+            rest_resp = ''
+            while not '# ' in rest_resp:
+                tmpresp = self.serial.read()
+                rest_resp += tmpresp.decode("utf-8")
+            resp = (resp + rest_resp).replace("\r\r\n", '')
             # change back the original timeout
             self.serial.timeout = self.serialReadTimeout
         except KeyboardInterrupt:
             self.err_print("KeyboardInterrupt happened! Attempting to stop..")
             self.serial.write(b'\x03')
             while not '@FPX-' in resp:
-                tmpresp = self.serial.read_until(b'# ')
-                resp += tmpresp.decode("utf-8").replace("\r\r\n", '')
+                tmpresp = self.serial.read()
+                resp += tmpresp.decode("utf-8")
+            rest_resp = ''
+            while not '# ' in rest_resp:
+                tmpresp = self.serial.read()
+                rest_resp += tmpresp.decode("utf-8")
+            resp = (resp + rest_resp).replace("\r\r\n", '')
         except serial.SerialTimeoutException as e:
             self.err_print('Timeout: {}'.format(e))
             self.err_print("Do NOT panic. Command may be still running.")
