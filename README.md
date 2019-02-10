@@ -37,7 +37,7 @@ Check [this README](https://github.com/HappyZ/dpt-tools/blob/master/fw_updater_p
 
 Most people would be interested in [the Rooting Guide](https://github.com/HappyZ/dpt-tools/wiki/The-Ultimate-Rooting-Guide).
 
-Details in [wiki](https://github.com/HappyZ/dpt-tools/wiki).
+Details in [wiki](https://github.com/HappyZ/dpt-tools/wiki). I have made flashable PKGs so you do not need to go through nasty steps any more.
 
 Note: if Launcher crashed, try in ADB sudo:
 ```
