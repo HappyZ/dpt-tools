@@ -305,6 +305,8 @@ def diagnosis_push_file(
             symbol = '>'
             startTime = int(time.time() * 1000)
             totalChunks = 0
+            dpt.info_print("total chunks to transfer: {:.2f}"
+                           .format(os.path.getsize(localfp) / chunkSize))
             with open(localfp, 'rb') as f:
                 while 1:
                     chunk = f.read(chunkSize)
