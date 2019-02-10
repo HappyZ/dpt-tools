@@ -2,6 +2,7 @@
 
 # built-ins
 import os
+import glob
 import time
 import serial
 import base64
@@ -591,6 +592,8 @@ class DPT():
         '''
         return the stored client key file paths
         '''
+        self.dbg_print("self.client_id_fp = {}".format(self.client_id_fp))
+        self.dbg_print("self.key_fp = {}".format(self.key_fp))
         return self.client_id_fp, self.key_fp
 
     def set_client_key_fps(self, client_id_fp, key_fp):
@@ -627,8 +630,18 @@ class DPT():
         tmp_dpa_path = "{}/.dpapp".format(home_path)
         if os.path.isdir(tmp_dpa_path):
             dpa_path = tmp_dpa_path
-        tmp_client_fp = "{}/deviceid.dat".format(dpa_path)
-        tmp_key_fp = "{}/privatekey.dat".format(dpa_path)
+        self.dbg_print("dpa_path = {}".format(dpa_path))
+        # search for desired files
+        tmp_client_fp = tmp_key_fp = ''
+        level3files = glob.glob(dpa_path + '/*/*/*.dat')
+        level2files = glob.glob(dpa_path + '/*/*.dat')
+        level1files = glob.glob(dpa_path + '/*.dat')
+        for tmp_fp in level3files + level2files + level1files:
+            self.dbg_print("looking at: {}".format(tmp_fp))
+            if 'deviceid.dat' in tmp_fp:
+                tmp_client_fp = tmp_fp
+            elif 'privatekey.dat' in tmp_fp:
+                tmp_key_fp = tmp_fp
         if os.path.isfile(tmp_client_fp) and os.path.isfile(tmp_key_fp):
             default_client_fp = tmp_client_fp
             default_key_fp = tmp_key_fp

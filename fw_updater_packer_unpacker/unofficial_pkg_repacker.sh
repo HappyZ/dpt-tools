@@ -80,10 +80,10 @@ OFFSET_DATA=$((OFFSET_DATA + DATAKEY_E_SIZE + 4))
 echo "* sign w/ private key $SIGKEY"
 openssl dgst -sha256 -sign $SIGKEY -out $TMPDIR/tmp.step4.1 $TMPDIR/tmp.step1
 openssl dgst -sha256 -verify $SHA256KEY -signature $TMPDIR/tmp.step4.1 $TMPDIR/tmp.step1
-# if [ $? -ne 0 ]; then
-#   echo "! Err: failed to verify sha256 - highly likely $SIGKEY is wrong"
-#   exit 0
-# fi
+if [ $? -ne 0 ]; then
+  echo "! Warning: failed to verify sha256 - highly likely $SIGKEY is not an nofficial one. Ignore this and proceed."
+  # exit 0
+fi
 SIG_SIZE=$(wc -c < $TMPDIR/tmp.step4.1)
 if [ $(((-(SIG_SIZE % 16)) % 16)) -gt 0 ]; then
   echo "! Err: not supported for SIG_SIZE not mutiple of 16"
