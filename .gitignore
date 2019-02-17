@@ -3,3 +3,5 @@ secrets
 .DS_Store
 *.pyc
 mkbootimg
+fw_updater_packer_unpacker/pkg_example/official_cp1_1.4.02.09061
+fw_updater_packer_unpacker/pkg_example/official_rp1_1.4.01.16100

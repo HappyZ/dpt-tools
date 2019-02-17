@@ -1,0 +1,13 @@
+This is a PKG packing script by shankerzhiwu. Post on behalf of him. Applause.
+
+# Explanation
+My PKG packing script requires DPT users to "hack" into their device in diagnosis mode, and change a few lines of the updater script to bypass the verification.
+
+Therefore, the hacking process requires the user to actually log into the diagnosis mode.
+
+`shankerzhiwu` took a step further (with the suggestion from `sekkit`) and made this script so DPT users do not need to go into the diagnosis mode at all, if users flash PKGs made by this script.
+
+
+# How to create PKG
+
+To make a PKG, just edit scripts in `FwUpdater` and then type `make`.
