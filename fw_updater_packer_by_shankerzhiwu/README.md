@@ -11,3 +11,5 @@ Therefore, the hacking process requires the user to actually log into the diagno
 # How to create PKG
 
 To make a PKG, just edit scripts in `FwUpdater` and then type `make`.
+
+NOTE: with this script that packs a legit PKG, potentially you can do ANYTHING to any DPT system (e.g., change diagnosis password etc.). Therefore, do TEST your script before you make one and release it.
