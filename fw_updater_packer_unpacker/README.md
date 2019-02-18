@@ -1,3 +1,5 @@
+This doc assumes to be a MacOS. Linux may have GNU commands that differ from the BSD ones. 
+
 # 0x0 Allow your DPT to accept PKG without correct key
 
 This will create SECURITY FLAW in your system!
