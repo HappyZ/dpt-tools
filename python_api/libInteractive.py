@@ -512,7 +512,7 @@ def diagnosis_restore_systemimg(dpt):
         dpt.diagnosis_stop_mass_storage()
         return False
     try:
-        resp = input('> Is it a sparse image? [yes/no]: ')
+        resp = input('> Is it a sparse image (from official PKG)? [yes/no]: ')
         isSparse = (resp == 'yes')
         resp = input('> Confirm to continue? [yes/no]: ')
     except KeyboardInterrupt:
