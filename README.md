@@ -46,6 +46,10 @@ mv ExtMgr.db ExtMgr.db_bak
 mv ExtMgr.db-journal ExtMgr.db-journal_bak
 ```
 
+**Note2: If you are a beginner, strictly follow the wiki guide. Use PKGs. Do NOT use anything in the script other than I told you to use.**
+
+**Note3: Read the steps CAREFULLY before you try. If you are not clear about anything, do NOT attempt and think you can recover easily via RESET button. Do NOT press RESET if anything goes wrong. It will make things even worse.**
+
 # 0xF Mission Impossible
 
 Well, to bypass pkg validation, you can also try to decrypt the RSA key and generate corresponding private key, when we actually have enough computation resources and time to do it lol:
