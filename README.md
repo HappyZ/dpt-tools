@@ -1,8 +1,14 @@
 # 0x0 Welcome
 
-Donate via [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zhuyanzi@gmail.com&item_name=A+Cup+Of+Coffee&item_number=Thank+You&currency_code=USD), or if you can, please simply go to [my blog post here](https://blog.happyz.me/2018/dpt-rp1-can-now-gain-root-access/) and *click* the Google advertisement for me to get a sip of coffee.
+Donate via [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zhuyanzi@gmail.com&item_name=A+Cup+Of+Coffee&item_number=Thank+You&currency_code=USD) or if you use [WeChat](https://github.com/HappyZ/dpt-tools/wiki#donations) :)
 
 Note: Scripts and mods are only tested on MacOS. I do not plan to support all platforms. Use it at your own risks.
+
+I should have some free time now to work on a single PKG that does it all. 
+I can use your help if you have a rooted `adbd` usable for Android 5, 
+please send it to me via `yz@9pm.me`. It will be insecure but *maybe* a better choice
+to assist recovering bricked device. Will also try to change frameworks for too small font issue. 
+Stay tuned!
 
 # 0x1 Special Thanks
 
