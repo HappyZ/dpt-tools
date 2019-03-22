@@ -3,6 +3,7 @@
 ROOTPWD=/etc/passwd
 DIAGFUNC=/usr/local/bin/diag_functions
 UPDATER=/usr/local/bin/updater_check.sh
+FWUPDATER=/usr/local/bin/start_eufwupdater.sh
 KEY_DETECTION_TMPF=/tmp/key_pressed.log
 
 
@@ -108,6 +109,7 @@ echo "======================================="
 echo " Patching customized updater script.."
 echo "======================================="
 echo ""
+
 echo "== Original ${UPDATER} (30 lines):"
 tail -n 30 ${UPDATER}
 echo "== Backing up..."
@@ -117,6 +119,16 @@ echo "== Enabling..."
 cat updater_check.sh > ${UPDATER}
 echo "== New ${UPDATER} (30 lines):"
 tail -n 30 ${UPDATER}
+
+echo "== Original ${FWUPDATER} (30 lines):"
+tail -n 30 ${FWUPDATER}
+echo "== Backing up..."
+cp ${FWUPDATER} ${FWUPDATER}_bak
+echo "== Enabling..."
+# use cat to prevent permission change
+cat start_eufwupdater.sh > ${FWUPDATER}
+echo "== New ${FWUPDATER} (30 lines):"
+tail -n 30 ${FWUPDATER}
 
 # validation
 echo "== Looking fine?"
@@ -129,8 +141,11 @@ then
     echo "== Rolling back..."
     # use cat to prevent permission change
     cat ${UPDATER}_bak > ${UPDATER}
+    cat ${FWUPDATER}_bak > ${FWUPDATER}
     echo "== Current ${UPDATER} (30 lines):"
     tail -n 30 ${UPDATER}
+    echo "== Current ${FWUPDATER} (30 lines):"
+    tail -n 30 ${FWUPDATER}
     echo "== Done. No modifications were made."
     exit 0
 fi
