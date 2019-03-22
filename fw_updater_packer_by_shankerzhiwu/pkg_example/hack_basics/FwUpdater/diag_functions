@@ -1,0 +1,70 @@
+#!/bin/sh
+
+
+
+# -- private functions --
+
+DIAG_get_usb_device ()
+{
+  echo $(( $(i2cget -y -f 1 0x35 0x04) & 0x1F ))
+}
+
+
+DIAG_get_hash ()
+{
+  md5sum | cut -f1 -d' '
+}
+
+
+DIAG_set_welcome_screen ()
+{
+  epd_fb_test gray GC16 FULL 8 0 700 1020 250 155
+}
+
+
+
+# -- public functions --
+
+DIAG_get_mode ()
+{
+  return 0
+  device_hash=$(rawdata --get_dump=diag_mode |
+                DIAG_get_hash)
+  target_hash=$(dd if=/dev/zero count=1 \
+                bs=$(echo $(rawdata --get_offset=diag_mode | cut -f3 -d:)) \
+                2>/dev/null |
+                DIAG_get_hash)
+
+  if test $(DIAG_get_usb_device) -eq 7; then
+    echo "USB key detected."
+    return 0
+  fi
+
+  if test $device_hash = $target_hash; then
+    return 0
+  fi
+
+  return 1
+}
+
+
+DIAG_enter ()
+{
+  
+  initctl start usb
+  DIAG_set_welcome_screen
+
+  return 0
+}
+
+
+DIAG_enable ()
+{
+  rawdata --set_dump=diag_mode < /dev/zero
+}
+
+
+DIAG_disable ()
+{
+  rawdata --set_dump=diag_mode < /dev/urandom
+}

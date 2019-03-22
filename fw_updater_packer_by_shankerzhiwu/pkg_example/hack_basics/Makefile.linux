@@ -1,0 +1,22 @@
+all: fw.pkg
+
+fw.pkg: base.pkg payload.tar.gz
+	echo 12836160f229d466bf4f051ba26fb46697bfa748e81b279b69ad9a5bd340958e $< | sha256sum -c
+	cp $< $@
+	echo "55  -none  -in /tmp/anim_sig.dat" | dd bs=32 count=1 seek=536 oflag=seek_bytes of=$@ conv=notrunc
+	echo "00 00 00 00" | xxd -r -p >> $@
+	echo "00 00 00 00" | xxd -r -p >> $@
+	printf '%08x' $$(wc -c < payload.tar.gz) | \
+	  sed -r 's/(..)(..)(..)(..)/\4\3\2\1/' | \
+       	  xxd -r -p | head -c 4 >> fw.pkg
+	cat payload.tar.gz >> $@
+
+
+payload.tar.gz: FwUpdater
+	[ -x $</eufwupdater.sh ]
+	tar -cvz --exclude=".*"  --owner=0 --group=0 --numeric-owner --no-acls  --no-xattrs -f $@ $<
+
+.PHONY: all check_sig payload.tar.gz 
+
+clean:
+	-rm fw.pkg payload.tar.gz
