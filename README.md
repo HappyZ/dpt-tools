@@ -44,6 +44,11 @@ After rooting, if interested, please do [the suggested launcher mod](https://git
 
 Details in [wiki](https://github.com/HappyZ/dpt-tools/wiki). I have also made flashable PKGs so you do not need to go through nasty steps any more.
 
+# 0x5 About Framework Layout
+
+To achieve a perfect framework layout, it requires you to modify `framework-res.apk` which is too much work to me. I have committed a few modifications for fun at [this place](https://github.com/HappyZ/dpt-framework-res). If you find taobao PKG has a working framework, feel free to drop a message and we can test it. Otherwise, I do not plan to continue on this path. 
+
+Note that you can still use `adb shell wm density 200` to change the density (default is 160, the larger the number, the larger the icon. For per app control, it is possible through the xposed framework and a script. I do hope to find a better solution. Need some insights though.
 
 # 0xF Mission Impossible
 
