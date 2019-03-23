@@ -4,7 +4,6 @@ Donate via [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](htt
 
 Note: Scripts and mods are only tested on MacOS, and are provided AS-IS for study purpose. I do not plan to support all platforms. Use it at your own risks.
 
-Mission one finished: single PKG that changes root password, enables diagnosis mode, and removes PKG validation. Part two stay tuned. 
 
 # 0x1 Special Thanks
 
@@ -37,7 +36,7 @@ Check [this README](https://github.com/HappyZ/dpt-tools/blob/master/fw_updater_p
 
 # 0x4 Tutorials
 
-Most people would be interested in [the Rooting Guide](https://github.com/HappyZ/dpt-tools/wiki/The-Ultimate-Rooting-Guide).
+Most people would be interested in [the Rooting Guide](https://github.com/HappyZ/dpt-tools/wiki/The-Ultimate-Rooting-Guide). Note that (03/22/2019) I have updated it with a super simple two-step process.
 
 Details in [wiki](https://github.com/HappyZ/dpt-tools/wiki). I have made flashable PKGs so you do not need to go through nasty steps any more.
 
