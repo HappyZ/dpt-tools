@@ -27,9 +27,9 @@ sleep 2
 
 # flash customized boot img
 echo "[updater.sh] writing boot.img.." >> $LOG_FP
-if [ -f ${UPDATER_BASE}/boot-1.4.01.16100-mod-181214.img ] ;
+if [ -f ${UPDATER_BASE}/boot-1.4.01.16100-mod-190322.img ] ;
 then
-  dd if=${UPDATER_BASE}/boot-1.4.01.16100-mod-181214.img of=/dev/mmcblk0p8 bs=4M
+  dd if=${UPDATER_BASE}/boot-1.4.01.16100-mod-190322.img of=/dev/mmcblk0p8 bs=4M
   sync
 else
   echo "[updater.sh] desired boot.img not exit; nothing did to boot partition" >> $LOG_FP
