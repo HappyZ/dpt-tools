@@ -36,20 +36,14 @@ Check [this README](https://github.com/HappyZ/dpt-tools/blob/master/fw_updater_p
 
 # 0x4 Tutorials
 
-Most people would be interested in [the Rooting Guide](https://github.com/HappyZ/dpt-tools/wiki/The-Ultimate-Rooting-Guide). Note that (03/22/2019) I have updated it with a super simple two-step process.
+Most people would be interested in [the Rooting Guide](https://github.com/HappyZ/dpt-tools/wiki/The-Ultimate-Rooting-Guide). Note that (03/22/2019) I have updated it with a super simple two-step process. But as usual: **read carefully before proceed**!
 
-Details in [wiki](https://github.com/HappyZ/dpt-tools/wiki). I have made flashable PKGs so you do not need to go through nasty steps any more.
+Also, **do NOT press RESET button if anything goes wrong unless you know what is it actually doing, be patient**. 
 
-Note: if Launcher crashed, try in ADB sudo:
-```
-cd /data/system
-mv ExtMgr.db ExtMgr.db_bak
-mv ExtMgr.db-journal ExtMgr.db-journal_bak
-```
+After rooting, if interested, please do [the suggested launcher mod](https://github.com/HappyZ/dpt-tools/wiki/Suggested-Launcher-Mod). 
 
-**Note2: If you are a beginner, strictly follow the wiki guide. Use PKGs. Do NOT use anything in the script other than I told you to use.**
+Details in [wiki](https://github.com/HappyZ/dpt-tools/wiki). I have also made flashable PKGs so you do not need to go through nasty steps any more.
 
-**Note3: Read the steps CAREFULLY before you try. If you are not clear about anything, do NOT attempt and think you can recover easily via RESET button. Do NOT press RESET if anything goes wrong. It will make things even worse.**
 
 # 0xF Mission Impossible
 
