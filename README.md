@@ -6,12 +6,6 @@ Note: Scripts and mods are only tested on MacOS, and are provided AS-IS for stud
 
 Mission one finished: single PKG that changes root password, enables diagnosis mode, and removes PKG validation. Part two stay tuned. 
 
-I should have some free time now to work on a single PKG that does it all. 
-I can use your help if you have a rooted `adbd` usable for Android 5, 
-please send it to me via `yz@9pm.me`. It will be insecure but *maybe* a better choice
-to assist recovering bricked device. Will also try to change frameworks for too small font issue. 
-Stay tuned!
-
 # 0x1 Special Thanks
 
 Greatly thank
