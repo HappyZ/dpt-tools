@@ -12,8 +12,8 @@ ${UPDATER_BASE}/animation.sh $LOG_FP &
 ANIM_PID=$!
 sleep 2
 
-# enable bluetooth hid by replacing the stock bluetooth apk
-echo "[updater.sh] run gethid.sh" >> $LOG_FP
+# disable bluetooth hid by recovering the stock bluetooth apk
+echo "[updater.sh] run recover.sh" >> $LOG_FP
 ${UPDATER_BASE}/gethid.sh $LOG_FP
 if [ ! $? -eq 0 ]
 then
