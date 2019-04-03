@@ -34,6 +34,10 @@ To flash pkg with unverified signature, you need to modify the updater file at `
 
 Check [this README](https://github.com/HappyZ/dpt-tools/blob/master/fw_updater_packer_unpacker/README.md) for more details.
 
+## systemimg_packer_unpacker
+
+Used to translate the sparse Android image (e.g., system.img) into a mountable ext4 format, and vice versa.
+
 # 0x4 Tutorials
 
 Most people would be interested in [the Rooting Guide](https://github.com/HappyZ/dpt-tools/wiki/The-Ultimate-Rooting-Guide). Note that (03/22/2019) I have updated it with a super simple two-step process. But as usual: **read carefully before proceed**!
