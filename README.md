@@ -38,6 +38,12 @@ Check [this README](https://github.com/HappyZ/dpt-tools/blob/master/fw_updater_p
 
 Used to translate the sparse Android image (e.g., system.img) into a mountable ext4 format, and vice versa.
 
+For example:
+```
+make
+./simg2img sparse_image_file_path generated_mountable_file_path
+```
+
 # 0x4 Tutorials
 
 Most people would be interested in [the Rooting Guide](https://github.com/HappyZ/dpt-tools/wiki/The-Ultimate-Rooting-Guide). Note that (03/22/2019) I have updated it with a super simple two-step process. But as usual: **read carefully before proceed**!
