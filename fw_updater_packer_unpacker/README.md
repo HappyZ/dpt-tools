@@ -2,25 +2,9 @@ This doc assumes to be a MacOS. Linux may have GNU commands that differ from the
 
 # 0x0 Allow your DPT to accept PKG without correct key
 
-This will create SECURITY FLAW in your system!
+This will create SECURITY FLAW in your system! Use PKG [here](https://github.com/HappyZ/dpt-tools/blob/master/fw_updater_packer_by_shankerzhiwu/pkg_example/hack_basics/fw.pkg).
 
-Comment out the key verification in file `/usr/local/bin/start_eufwupdater.sh`: (edit via `busybox vi`)
-```
-########################################
-# verify sig
-########################################
-# dd if=$1 bs=$(($DATA_OFFSET)) skip=1 2>/dev/null | head -c $(($BODY_SIZE)) |
-# openssl dgst -sha256 -verify $3 -signature $SIG_FILE 1>/dev/null
-# if [ $? -ne 0 ]
-# then
-#   echo "Verify failed."
-#   exit 0
-# fi
-```
-
-Also, to prevent permanent brick, modify `/usr/local/bin/updater_check.sh` according to `python_api/assets/updater_check.sh`.
-
-An easier way to do above is to run `patch-updater-bash` in `dpt-tools.py --diagnosis` in diagnosis mode.
+Note: you will still be able to flash the official PKG afterwards.
 
 # 0x1 Create your own PKG package
 
