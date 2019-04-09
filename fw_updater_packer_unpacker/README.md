@@ -6,6 +6,8 @@ This will create SECURITY FLAW in your system! Use PKG [here](https://github.com
 
 Note: you will still be able to flash the official PKG afterwards.
 
+Windows users: do NOT try to edit the update script with your notepad, as it will alternate the newline `\n` into `\r\n` which halts the system and brick the system!
+
 # 0x1 Create your own PKG package
 
 ## Use Official PKGs as Examples
