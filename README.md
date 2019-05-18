@@ -46,11 +46,11 @@ make
 
 # 0x4 Tutorials
 
-Most people would be interested in [the Rooting Guide](https://github.com/HappyZ/dpt-tools/wiki/The-Ultimate-Rooting-Guide). Note that (03/22/2019) I have updated it with a super simple two-step process. But as usual: **read carefully before proceed**!
+Most people would be interested in [the Rooting Guide](https://github.com/HappyZ/dpt-tools/wiki/The-Ultimate-Rooting-Guide) and [the Upgrading Guide](https://github.com/HappyZ/dpt-tools/wiki/The-Upgrade-Guide). As usual: **read carefully before proceed**!
 
 Also, **do NOT press RESET button if anything goes wrong unless you know what is it actually doing, be patient**. 
 
-After rooting, if interested, please do [the suggested launcher mod](https://github.com/HappyZ/dpt-tools/wiki/Suggested-Launcher-Mod). 
+After rooting, if not using the fully customized PKG, please do [the suggested launcher mod](https://github.com/HappyZ/dpt-tools/wiki/Suggested-Launcher-Mod). 
 
 Details in [wiki](https://github.com/HappyZ/dpt-tools/wiki). I have also made flashable PKGs so you do not need to go through nasty steps any more.
 
