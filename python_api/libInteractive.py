@@ -2,6 +2,7 @@
 
 # built-ins
 import os
+import sys
 import time
 import subprocess
 
@@ -42,104 +43,6 @@ def update_firmware(dpt):
     return False
 
 
-def validate_required_files(dpt, purpose='diagnosis'):
-    if purpose == 'su-binary':
-        requiredFiles = [
-            'python_api/assets/su',
-            'python_api/assets/supolicy',
-            'python_api/assets/libsupol.so',
-            'python_api/assets/install-recovery.sh'
-        ]
-    elif purpose == 'eufwupdater':
-        requiredFiles = [
-            'python_api/assets/start_eufwupdater.sh',
-            'python_api/assets/updater_check.sh'
-        ]
-    else:
-        requiredFiles = [
-            'python_api/assets/shankerzhiwu_disableidcheck.pkg',
-            'python_api/assets/shankerzhiwu_changepwd.pkg'
-        ]
-    dpt.dbg_print('Checking required files...')
-    for file in requiredFiles:
-        if not os.path.isfile(file):
-            dpt.err_print('File {0} does not exist!'.format(file))
-            return False
-    return True
-
-
-def disable_id_check(dpt):
-    '''
-    disable the id check (thanks to shankerzhiwu and his/her friend)
-    '''
-    fp = 'python_api/assets/shankerzhiwu_disableidcheck.pkg'
-    try:
-        resp = input('>>> Have you disabled the id check already? [yes/no]: ')
-        if resp == 'no':
-            if not dpt.update_firmware(open(fp, 'rb')):
-                dpt.err_print('Failed to upload shankerzhiwu_disableidcheck pkg')
-                return False
-            return True
-        elif resp == 'yes':
-            return True
-        else:
-            dpt.err_print('Unrecognized response: {}'.format(resp))
-    except BaseException as e:
-        dpt.err_print(str(e))
-    return False
-
-
-def reset_root_password(dpt):
-    '''
-    reset the root password (thanks to shankerzhiwu and his/her friend)
-    '''
-    fp = 'python_api/assets/shankerzhiwu_changepwd.pkg'
-    try:
-        if not dpt.update_firmware(open(fp, 'rb')):
-            dpt.err_print('Failed to upload shankerzhiwu_changepwd pkg')
-            return False
-        return True
-    except BaseException as e:
-        dpt.err_print(str(e))
-        return False
-
-
-def obtain_diagnosis_access(dpt):
-    '''
-    root thanks to shankerzhiwu
-    '''
-    dpt.info_print(
-        'Please make sure you have charged your battery before this action.')
-    dpt.info_print(
-        'Thank shankerzhiwu (and his/her anonymous friend) a lot on this hack!!!' +
-        'All credits go to him (and his/her anonymous friend)!')
-    if not validate_required_files(dpt):
-        return False
-    # step 1: disable the id check
-    if not disable_id_check(dpt):
-        return False
-    dpt.info_print('Congrats! You are half-way through! You have disabled the OTG ID check')
-    try:
-        input(
-            '>>> After your DPT reboots, shows `update failure` message, ' +
-            'connects back to WiFi, etc., press `Enter` key to continue')
-    except BaseException as e:
-        dpt.err_print(str(e))
-        return False
-    if not dpt.reauthenticate():
-        dpt.err_print("Cannot reauthenticate after reboot")
-        dpt.err_print("Client id filepath: {}".format(dpt.client_id_fp))
-        dpt.err_print("Client key filepath: {}".format(dpt.key_fp))
-        return False
-    # step 2: reset root password
-    if not reset_root_password(dpt):
-        return False
-    dpt.info_print(
-        'You are all set! Wait till your DPT reboots and ' +
-        'shows `update failure` message! More edits will be added to this tool.')
-    return True
-
-
 '''
 Diagnosis Related
 '''
@@ -154,14 +57,13 @@ It behaves similarly to regular serial session with less flexibility (cannot use
 This mode intends to automate some complicated procedures.
 
 Supported commands:
-    `patch-updater-bash`-- patch the updater bash to bypass sig validation
-    `push-file`         -- transfer file to DPT at 800bps (=100Bps)
-    `pull-file`         -- transfer file from DPT
-    `backup-bootimg`    -- backup the boot img and download it to local device
-    `restore-bootimg`   -- restore the boot img (use `boot.img.bak`)
-    `restore-systemimg` -- restore the system img (use `system.img`)
-    `get-su-bin`        -- enable `su` (root) in adb
-    `exit`/`quit`       -- leave the tool
+    `push-file`             -- devlop usage only, transfer file to DPT at 800bps (=100Bps)
+    `pull-file`             -- devlop usage only, transfer file from DPT
+    `restore-boot-img`      -- restore the boot img (use `boot.img`)
+    `restore-system-img`    -- restore the system img (use `system.img`)
+    `install-pkg`           -- mount mass storage and put in pkg (`FwUpdater.pkg`) to install
+    `reboot`                -- get out of diagnosis mode and reboot into normal system
+    `exit`/`quit`           -- leave the tool
     and many unix cmds (do not support less/head)
 """)
 
@@ -339,164 +241,6 @@ def diagnosis_push_file(
     return None
 
 
-def diagnosis_patch_eufwupdater(dpt):
-    '''
-    patch the start_eufwupdater.sh to bypass pkg check
-    '''
-    if not validate_required_files(dpt, purpose='eufwupdater'):
-        return False
-    # patch start_eufwupdater.sh
-    bashfp = diagnosis_push_file(
-        dpt,
-        localfp='python_api/assets/start_eufwupdater.sh',
-        folder='/usr/local/bin',
-        overwrite=True)
-    if bashfp is None:
-        dpt.err_print("Failed to patch start_eufwupdater.sh!!")
-        return False
-    dpt.diagnosis_set_perm(bashfp, owner='1496.1496', perm='0775')
-    # patch updater_check.sh
-    bashfp = diagnosis_push_file(
-        dpt,
-        localfp='python_api/assets/updater_check.sh',
-        folder='/usr/local/bin',
-        overwrite=True)
-    if bashfp is None:
-        dpt.err_print("Failed to patch updater_check.sh!!")
-        return False
-    dpt.diagnosis_set_perm(bashfp, owner='1496.1496', perm='0775')
-    # success
-    dpt.info_print("Success!")
-    return True
-
-
-def diagnosis_backup_bootimg(dpt):
-    '''
-    backup boot img and then pull img from DPT to local disk
-    '''
-    remotefp = dpt.diagnosis_backup_boot(toSD=True)
-    md5 = dpt.diagnosis_md5sum_file(remotefp)
-    dpt.info_print("Success!")
-    # mount mass storage to allow quick copy of backup
-    dpt.diagnosis_start_mass_storage()
-    dpt.info_print("Your computer shall have mounted a disk.")
-    dpt.info_print("Please open that disk and copy your backup")
-    dpt.info_print("`boot.img.bak` to a safe place.")
-    dpt.info_print("Also, check if its MD5 is: {}.".format(md5))
-    dpt.info_print("After then you can delete the file in that disk.")
-    try:
-        input(
-            "While done, please eject the disk, " +
-            "and press Enter key to continue..")
-        dpt.diagnosis_stop_mass_storage()
-    except KeyboardInterrupt:
-        dpt.err_print("Nothing happened..")
-        dpt.diagnosis_stop_mass_storage()
-        return False
-    # # pull this backup file to current folder
-    # if remotefp:
-    #     fp = diagnosis_pull_file(
-    #         dpt, remotefp=remotefp, folder=".", overwrite=True
-    #     )
-    #     if fp is not None:
-    #         dpt.info_print("Success!")
-    #         return True
-    # dpt.info_print("Nothing happened..")
-    # return False
-
-
-def diagnosis_get_su_bin(dpt):
-    '''
-    get sudo access in adb mode (so it would be much much eaiser to
-    make changes (no painful serial data transfer)
-    after doing this, adb should handle most necessary modifications
-    here we use system-method (push binary files to system)
-    '''
-    if not validate_required_files(dpt, purpose='su-binary'):
-        return False
-    dpt.info_print("Mounting /system partition..")
-    mountpoint = dpt.diagnosis_mount_system()
-    dpt.info_print("Mounted to {}".format(mountpoint))
-    if not mountpoint:
-        dpt.err_print("Nothing happened..")
-        return False
-
-    dpt.info_print("Uploading su file to /system/xbin..")
-    sufp = diagnosis_push_file(
-        dpt,
-        localfp='python_api/assets/su',
-        folder='{}/xbin'.format(mountpoint),
-        overwrite=True)
-    if sufp is None:
-        dpt.err_print("Due to previous failure, we stopped..")
-        return False
-    dpt.diagnosis_set_perm(sufp, owner='0.0', perm='0755')
-    daemonsufp = sufp[:-2] + 'daemonsu'
-    dpt.diagnosis_write('cp {0} {1}'.format(sufp, daemonsufp))
-    extfolder = "{}/bin/.ext".format(mountpoint)
-    dpt.diagnosis_mkdir(extfolder)
-    dpt.diagnosis_set_perm(extfolder, owner='0.0', perm='0777')
-    dpt.diagnosis_write('cp {0} {1}/.su'.format(sufp, extfolder))
-
-    dpt.info_print("Uploading supolicy file to /system/xbin..")
-    supolicyfp = diagnosis_push_file(
-        dpt,
-        localfp='python_api/assets/supolicy',
-        folder='{}/xbin'.format(mountpoint),
-        overwrite=True)
-    if supolicyfp is None:
-        dpt.err_print("Due to previous failure, we stopped..")
-        return False
-    dpt.diagnosis_set_perm(supolicyfp, owner='0.0', perm='0755')
-    libsupolsofp = diagnosis_push_file(
-        dpt,
-        localfp='python_api/assets/libsupol.so',
-        folder='{}/lib'.format(mountpoint),
-        overwrite=True)
-    if libsupolsofp is None:
-        dpt.err_print("Due to previous failure, we stopped..")
-        return False
-    dpt.diagnosis_set_perm(libsupolsofp, owner='0.0', perm='0644')
-
-    dpt.info_print("Uploading install-recovery.sh to /system/bin..")
-    installrecfp = diagnosis_push_file(
-        dpt,
-        localfp='python_api/assets/install-recovery.sh',
-        folder='{}/bin'.format(mountpoint),
-        overwrite=True)
-    if installrecfp is None:
-        dpt.err_print("Due to previous failure, we stopped..")
-        return False
-    dpt.diagnosis_set_perm(installrecfp, owner='0.0', perm='0755')
-
-    dpt.info_print("Tweaking /system/bin/app_process..")
-    appprocessfp = '{0}/bin/app_process'.format(mountpoint)
-    dpt.diagnosis_write('mv {0} {0}_bak'.format(appprocessfp))
-    dpt.diagnosis_ln("/system/xbin/daemonsu", appprocessfp)
-
-    dpt.info_print("Tweaking /system/bin/app_process32..")
-    appprocess32fp = '{0}32'.format(appprocessfp)
-    if dpt.diagnosis_isfile("{}_original".format(appprocess32fp)):
-        dpt.diagnosis_remove_file(appprocess32fp)
-    else:
-        dpt.diagnosis_write("mv {0} {0}_original".format(appprocess32fp))
-    dpt.diagnosis_ln("/system/xbin/daemonsu", appprocess32fp)
-
-    dpt.info_print("Tweaking /system/bin/app_process_init..")
-    if not dpt.diagnosis_isfile("{}_init".format(appprocessfp)):
-        dpt.diagnosis_write(
-            "cp {0}_original {1}_init".format(appprocess32fp, appprocessfp))
-        dpt.diagnosis_set_perm(
-            "{}_init".format(appprocessfp), owner='0.2000', perm='0755')
-
-    dpt.info_print("Misc: add /system/etc/.installed_su_daemon")
-    miscfp = "{}/etc/.installed_su_daemon".format(mountpoint)
-    dpt.diagnosis_write("echo 1 > {}".format(miscfp))
-    dpt.diagnosis_set_perm(miscfp, owner='0.0', perm='0644')
-
-    dpt.info_print("Done!")
-
-
 def diagnosis_restore_systemimg(dpt):
     '''
     restore system img
@@ -528,22 +272,13 @@ def diagnosis_restore_systemimg(dpt):
     return False
 
 
-def diagnosis_restore_bootimg(dpt, usetmpfp=None, bootimgfp=None):
+def diagnosis_restore_bootimg(dpt, bootimgfp=None):
     '''
     restore boot img
     '''
-    if usetmpfp is None:
-        resp = input('> Upload boot img? [yes/no]: ')
-        usetmpfp = False if resp == 'yes' else True
-    # directly use the original backup, if exists
-    if usetmpfp:
-        dpt.info_print("Trying to use /root/boot.img.bak")
-        return dpt.diagnosis_restore_boot(fp="/root/boot.img.bak")
-    # otherwise we need to first upload our own boot img
-    # NOTE: use mass storage instead
     dpt.diagnosis_start_mass_storage()
     dpt.info_print("Your computer shall have mounted a disk.")
-    dpt.info_print("Please copy your `boot.img.bak` there.")
+    dpt.info_print("Please copy your `boot.img` there.")
     try:
         input("When done, plz eject disk and press Enter to continue..")
         dpt.diagnosis_stop_mass_storage()
@@ -559,13 +294,39 @@ def diagnosis_restore_bootimg(dpt, usetmpfp=None, bootimgfp=None):
         dpt.err_print("Nothing happened..")
         return False
     if resp == 'yes':
-        if dpt.diagnosis_restore_boot(fp="boot.img.bak", fromSD=True):
+        if dpt.diagnosis_restore_boot(fp="boot.img", fromSD=True):
             dpt.info_print("Success!")
             return True
         dpt.err_print("Failed..")
         return False
     dpt.err_print("Nothing happened..")
     return False
+
+
+def diagnosis_restore_pkg(dpt):
+    '''
+    install/restore from an uploaded pkg in diagnosis mode
+    '''
+    dpt.diagnosis_start_mass_storage()
+    dpt.info_print("Your computer shall have mounted a disk.")
+    dpt.info_print("Please copy your `FwUpdater.pkg` there.")
+    try:
+        input("When done, plz eject disk and press Enter to continue..")
+        dpt.diagnosis_stop_mass_storage()
+    except KeyboardInterrupt:
+        dpt.diagnosis_stop_mass_storage()
+        return False
+    dpt.info_print("We will now reboot the device to install pkg")
+    dpt.info_print("If you changed your mind,")
+    dpt.info_print("hold POWER button during the reboot,")
+    dpt.info_print("it will skip the PKG update and go to normal system")
+    dpt.info_print("")
+    dpt.info_print("You can also instead hold HOME button during the reboot,")
+    dpt.info_print("it will go back into diagnosis mode")
+    input("Ready? Press Enter to continue..")
+    dpt.info_print("System rebooting..")
+    dpt.diagnosis_write("reboot &")
+    return True
 
 
 def diagnosis_cmd(dpt):
@@ -590,27 +351,28 @@ def diagnosis_cmd(dpt):
             elif cmd == 'help':
                 print_diagnosis_info()
                 continue
-            elif cmd =='patch-updater-bash':
-                diagnosis_patch_eufwupdater(dpt)
-                continue
             elif cmd == 'push-file':
                 diagnosis_push_file(dpt)
                 continue
             elif cmd == 'pull-file':
                 diagnosis_pull_file(dpt)
                 continue
-            elif cmd == 'backup-bootimg':
-                diagnosis_backup_bootimg(dpt)
-                continue
-            elif cmd == 'restore-bootimg':
+            elif cmd == 'restore-boot-img':
                 diagnosis_restore_bootimg(dpt)
                 continue
-            elif cmd == 'restore-systemimg':
+            elif cmd == 'restore-system-img':
                 diagnosis_restore_systemimg(dpt)
                 continue
-            elif cmd == 'get-su-bin':
-                diagnosis_get_su_bin(dpt)
-                continue
+            elif cmd == 'install-pkg':
+                diagnosis_restore_pkg(dpt)
+                dpt.info_print("due to the reboot, exiting the tool..")
+                dpt.shut_down_diagnosis()
+                raise EOFError
+            elif cmd == 'reboot':
+                dpt.info_print("due to the reboot, exiting the tool..")
+                dpt.diagnosis_write('reboot &')
+                dpt.shut_down_diagnosis()
+                raise EOFError
             rawresp = dpt.diagnosis_write(cmd)
             # ignore first and last echos
             tmp = rawresp.splitlines()
@@ -658,4 +420,5 @@ def diagnosis_mode(dpt):
         return False
     diagnosis_cmd(dpt)
     dpt.shut_down_diagnosis()
+    dpt.info_print("got out of diagnosis")
     return True
