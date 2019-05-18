@@ -318,8 +318,9 @@ def diagnosis_restore_pkg(dpt):
         return False
     dpt.info_print("We will now reboot the device to install PKG")
     dpt.info_print("")
-    dpt.info_print("Hold the HOME button while rebooting until the light flashes")
-    dpt.info_print("Now release the button and enjoy a cup of coffee")
+    dpt.info_print("Hold the HOME button while rebooting")
+    dpt.info_print("Wait till lights turning off and start flashing yellow,")
+    dpt.info_print("then release the button and enjoy a cup of coffee")
     dpt.info_print("")
     dpt.info_print("If you changed your mind before the third bar appears,")
     dpt.info_print("press the POWER button during the reboot,")
