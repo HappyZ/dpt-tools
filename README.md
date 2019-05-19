@@ -34,16 +34,31 @@ To flash pkg with unverified signature, you need to modify the updater file at `
 
 Check [this README](https://github.com/HappyZ/dpt-tools/blob/master/fw_updater_packer_unpacker/README.md) for more details.
 
+## systemimg_packer_unpacker
+
+Used to translate the sparse Android image (e.g., system.img) into a mountable ext4 format, and vice versa.
+
+For example:
+```
+make
+./simg2img sparse_image_file_path generated_mountable_file_path
+```
+
 # 0x4 Tutorials
 
-Most people would be interested in [the Rooting Guide](https://github.com/HappyZ/dpt-tools/wiki/The-Ultimate-Rooting-Guide). Note that (03/22/2019) I have updated it with a super simple two-step process. But as usual: **read carefully before proceed**!
+Most people would be interested in [the Rooting Guide](https://github.com/HappyZ/dpt-tools/wiki/The-Ultimate-Rooting-Guide) and [the Upgrading Guide](https://github.com/HappyZ/dpt-tools/wiki/The-Upgrade-Guide). As usual: **read carefully before proceed**!
 
 Also, **do NOT press RESET button if anything goes wrong unless you know what is it actually doing, be patient**. 
 
-After rooting, if interested, please do [the suggested launcher mod](https://github.com/HappyZ/dpt-tools/wiki/Suggested-Launcher-Mod). 
+After rooting, if not using the fully customized PKG, please do [the suggested launcher mod](https://github.com/HappyZ/dpt-tools/wiki/Suggested-Launcher-Mod). 
 
 Details in [wiki](https://github.com/HappyZ/dpt-tools/wiki). I have also made flashable PKGs so you do not need to go through nasty steps any more.
 
+# 0x5 About Framework Layout
+
+To achieve a perfect framework layout, it requires you to modify `framework-res.apk` which is too much work to me. I have committed a few modifications for fun at [this place](https://github.com/HappyZ/dpt-framework-res). If you find taobao PKG has a working framework, feel free to drop a message and we can test it. Otherwise, I do not plan to continue on this path. 
+
+Note that you can still use `adb shell wm density 200` to change the density (default is 160, the larger the number, the larger the icon. For per app control, it is possible through the xposed framework and a script. I do hope to find a better solution. Need some insights though.
 
 # 0xF Mission Impossible
 

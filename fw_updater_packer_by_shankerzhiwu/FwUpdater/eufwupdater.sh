@@ -36,8 +36,8 @@ echo "This is a demo update package which does nothing."
 echo "enjoy"
 
 for i in $(seq 10 -1 1); do
-	echo "will done in ${i} seconds."
-	sleep 1
+  echo "will done in ${i} seconds."
+  sleep 1
 done
 
 exit 0
