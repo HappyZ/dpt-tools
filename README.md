@@ -44,6 +44,8 @@ make
 ./simg2img sparse_image_file_path generated_mountable_file_path
 ```
 
+Note: the repacked image, though legit, cannot be recognized by the DPT device. It may have to do with the unknown executable `extract_sparse_file`.
+
 # 0x4 Tutorials
 
 Most people would be interested in [the Rooting Guide](https://github.com/HappyZ/dpt-tools/wiki/The-Ultimate-Rooting-Guide) and [the Upgrading Guide](https://github.com/HappyZ/dpt-tools/wiki/The-Upgrade-Guide). As usual: **read carefully before proceed**!
