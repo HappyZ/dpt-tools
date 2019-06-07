@@ -404,6 +404,7 @@ def diagnosis_mode(dpt):
     dpt.info_print('3. Press POWER button once. Then light blinks yellow')
     dpt.info_print('4. Release HOME button, a black square will show up')
     dpt.info_print('5. Connect to computer')
+    dpt.info_print('6. (Windows) You can now use device manager to find which COM port DPT is connected to. E.g. COM5')
     try:
         resp = input('>>> Black square on the screen? [yes/no]: ')
         if resp == 'no':
