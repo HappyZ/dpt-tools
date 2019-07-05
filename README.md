@@ -4,6 +4,8 @@ Donate via [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](htt
 
 Note: Scripts and mods are only tested on MacOS, and are provided AS-IS for study purpose. I do not plan to support all platforms. Use it at your own risks.
 
+07/05/2019: I will stop updating this tool and making new PKGs as there is nothing more interesting to explore. Gotta move on, guys and gals. I'll keep an eye on the issues though, and try my best to resolve them when I get time. Thanks.
+
 
 # 0x1 Special Thanks
 
