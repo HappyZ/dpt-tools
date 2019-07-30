@@ -404,6 +404,11 @@ def diagnosis_mode(dpt):
     dpt.info_print('3. Press POWER button once. Then light blinks yellow')
     dpt.info_print('4. Release HOME button, a black square will show up')
     dpt.info_print('5. Connect to computer')
+    dpt.info_print('6. (Windows) After step 5 you can use device manager to find which COM port DPT is connected to. E.g. COM5')
+    dpt.info_print('Notice that if your DPT is in diagnosis mode, you can exit it by pressing the reset button.')
+    dpt.info_print('If this program exits, and your DPT is still in diagnosis mode,')
+    dpt.info_print('you get here again by starting with parameter --diagnosis')
+    dpt.info_print('It is also possible to interact with diagnosis mode with a serial terminal, such as putty.')
     try:
         resp = input('>>> Black square on the screen? [yes/no]: ')
         if resp == 'no':
