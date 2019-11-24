@@ -6,6 +6,8 @@ Note: Scripts and mods are only tested on MacOS, and are provided AS-IS for stud
 
 07/05/2019: I will stop updating this tool and making new PKGs as there is nothing more interesting to explore. Gotta move on, guys and gals. I'll keep an eye on the issues though, and try my best to resolve them when I get time. Thanks.
 
+11/23/2019: Came back and updated to v1.6.03.09261. Also, for devices manufactured after September 2019, the updater script bug seems to be fixed already and the rooting package may no longer work.
+
 
 # 0x1 Special Thanks
 
