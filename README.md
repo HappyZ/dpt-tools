@@ -1,6 +1,6 @@
 # 0x0 Welcome
 
-Donate via [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zhuyanzi@gmail.com&item_name=A+Cup+Of+Coffee&item_number=Thank+You&currency_code=USD) or if you use [WeChat](https://github.com/HappyZ/dpt-tools/wiki#donations) :)
+Donate via [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=zhuyanzi@gmail.com&item_name=A+Cup+Of+Coffee&item_number=Thank+You&currency_code=USD) :)
 
 Note: Scripts and mods are only tested on MacOS, and are provided AS-IS for study purpose. I do not plan to support all platforms. Use it at your own risks.
 
