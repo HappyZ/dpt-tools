@@ -6,7 +6,7 @@ Note: Scripts and mods are only tested on MacOS, and are provided AS-IS for stud
 
 04/05/2020: COVID-19 sucks that you have to stay home FOREVER. Well anyhow, came back and updated mod to v1.6.50.14130. As noted below, this is only an update for those "lucky" to have the root already. For devices that have already patched the update script bug, this rooting method would not work.
 
-11/23/2019: Came back and updated to v1.6.03.09261. Also, for devices manufactured after September 2019, the updater script bug seems to be fixed already and the rooting package may no longer work.
+11/23/2019: Came back and updated to v1.6.03.09261. Also, for devices **manufactured** after September 2019, the updater script bug is fixed already and the rooting package may no longer work.
 
 07/05/2019: I will stop updating this tool and making new PKGs as there is nothing more interesting to explore. Gotta move on, guys and gals. I'll keep an eye on the issues though, and try my best to resolve them when I get time. Thanks.
 
